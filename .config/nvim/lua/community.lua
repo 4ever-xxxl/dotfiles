@@ -10,6 +10,8 @@ return {
   { import = "astrocommunity.pack.python" },
   { import = "astrocommunity.pack.verilog" },
 
+  { import = "astrocommunity.recipes.telescope-lsp-mappings" },
+
   { import = "astrocommunity.completion.cmp-cmdline" },
 
   { import = "astrocommunity.colorscheme.catppuccin" },
