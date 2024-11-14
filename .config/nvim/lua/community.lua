@@ -17,4 +17,12 @@ return {
 
   { import = "astrocommunity.colorscheme.catppuccin" },
   -- import/override with your plugins folder
+  --
+  --
+  {
+    "catppuccin",
+    opts = {
+      flavour = "latte",
+    },
+  },
 }
