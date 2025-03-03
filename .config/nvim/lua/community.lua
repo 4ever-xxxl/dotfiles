@@ -9,11 +9,13 @@ return {
   { import = "astrocommunity.pack.cpp" },
   { import = "astrocommunity.pack.rust" },
   { import = "astrocommunity.pack.python" },
+  { import = "astrocommunity.pack.scala" },
   { import = "astrocommunity.pack.verilog" },
 
   { import = "astrocommunity.recipes.telescope-lsp-mappings" },
 
   { import = "astrocommunity.completion.cmp-cmdline" },
+  { import = "astrocommunity.editing-support.copilotchat-nvim" },
 
   { import = "astrocommunity.colorscheme.catppuccin" },
   -- import/override with your plugins folder
@@ -22,7 +24,7 @@ return {
   {
     "catppuccin",
     opts = {
-      flavour = "latte",
+      flavour = "mocha",
     },
   },
 }
