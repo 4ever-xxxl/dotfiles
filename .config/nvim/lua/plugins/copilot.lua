@@ -2,7 +2,7 @@ return {
   {
     "github/copilot.vim",
     event = "InsertEnter",
-    lazy = false,
+    lazy = true,
     autoStart = true,
     config = function()
       vim.g.copilot_assume_mapped = true

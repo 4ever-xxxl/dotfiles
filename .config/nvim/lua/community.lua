@@ -18,13 +18,16 @@ return {
   { import = "astrocommunity.editing-support.copilotchat-nvim" },
 
   { import = "astrocommunity.colorscheme.catppuccin" },
+  { import = "astrocommunity.colorscheme.nightfox-nvim" },
+
   -- import/override with your plugins folder
   --
   --
   {
     "catppuccin",
     opts = {
-      flavour = "mocha",
+      -- latte mocha
+      flavour = "latte",
     },
   },
 }
