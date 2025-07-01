@@ -5,29 +5,16 @@
 ---@type LazySpec
 return {
   "AstroNvim/astrocommunity",
-  { import = "astrocommunity.pack.lua" },
+  { import = "astrocommunity.fuzzy-finder.telescope-nvim" },
+
+  { import = "astrocommunity.pack.cmake" },
   { import = "astrocommunity.pack.cpp" },
-  { import = "astrocommunity.pack.rust" },
+  { import = "astrocommunity.pack.go" },
+  { import = "astrocommunity.pack.lua" },
+  { import = "astrocommunity.pack.markdown" },
   { import = "astrocommunity.pack.python" },
+  { import = "astrocommunity.pack.rust" },
   { import = "astrocommunity.pack.scala" },
   { import = "astrocommunity.pack.verilog" },
-
-  { import = "astrocommunity.recipes.telescope-lsp-mappings" },
-
-  { import = "astrocommunity.completion.cmp-cmdline" },
-  { import = "astrocommunity.editing-support.copilotchat-nvim" },
-
-  { import = "astrocommunity.colorscheme.catppuccin" },
-  { import = "astrocommunity.colorscheme.nightfox-nvim" },
-
   -- import/override with your plugins folder
-  --
-  --
-  {
-    "catppuccin",
-    opts = {
-      -- latte mocha
-      flavour = "latte",
-    },
-  },
 }
