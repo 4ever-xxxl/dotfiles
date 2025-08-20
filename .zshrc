@@ -25,48 +25,28 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
-
-export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
-export PATH="$PATH:/opt/riscv/bin"
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 autoload -U colors && colors
 export GROFF_NO_SGR=1
 
-alias nv="nvim"
-alias lg="lazygit"
-alias bat="batcat"
-
-export NODE_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/
-export GO111MODULE=on
-export GOPROXY=https://goproxy.cn,direct
-
-export GALLIUM_DRIVER=d3d12
-
-# Created by `pipx` on 2024-09-28 03:24:56
-
-man() {
-    LESS_TERMCAP_md=$'\e[01;31m' \
-    LESS_TERMCAP_me=$'\e[0m' \
-    LESS_TERMCAP_se=$'\e[0m' \
-    LESS_TERMCAP_so=$'\e[01;44;33m' \
-    LESS_TERMCAP_ue=$'\e[0m' \
-    LESS_TERMCAP_us=$'\e[01;32m' \
-    command man "$@"
-}
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# fnm
-FNM_PATH="/home/lx10ng/.local/share/fnm"
-if [ -d "$FNM_PATH" ]; then
-  export PATH="/home/lx10ng/.local/share/fnm:$PATH"
-  eval "`fnm env`"
+if [ -f "$HOME/.env" ]; then
+    . "$HOME/.env"
 fi
 
-# Created by `pipx` on 2025-06-26 05:10:19
-export PATH="$PATH:/home/lx10ng/.local/bin"
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/opt/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
