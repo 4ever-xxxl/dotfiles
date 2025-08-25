@@ -82,4 +82,32 @@ return {
       )
     end,
   },
+
+  -- ==========================================================================
+  -- nightfox
+  -- ==========================================================================
+  {
+    "EdenEast/nightfox.nvim",
+    name = "nightfox",
+    priority = 1000,
+    config = function() end,
+  },
+
+  {
+    "RaafatTurki/hex.nvim",
+    config = function() require("hex").setup() end,
+  },
+
+  {
+    "folke/todo-comments.nvim",
+    event = "VeryLazy",
+  },
+
+  {
+    "olimorris/persisted.nvim",
+    event = "VeryLazy",
+    opts = {
+      -- 你的配置
+    },
+  },
 }
