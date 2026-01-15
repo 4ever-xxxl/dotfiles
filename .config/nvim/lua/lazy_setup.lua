@@ -18,6 +18,10 @@ require("lazy").setup({
   install = { colorscheme = { "astrotheme", "habamax" } },
   ui = { backdrop = 100 },
   performance = {
+    cache = {
+      enabled = true,
+      disable_events = { "UIEnter" },
+    },
     rtp = {
       -- disable some rtp plugins, add more to your liking
       disabled_plugins = {
