@@ -26,7 +26,14 @@ require("lazy").setup({
         "tarPlugin",
         "tohtml",
         "zipPlugin",
+        "matchit",
+        "man",
+        "health",
+        "tutor",
       },
     },
+  },
+  defaults = {
+    lazy = true,
   },
 } --[[@as LazyConfig]])

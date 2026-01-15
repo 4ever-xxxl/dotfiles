@@ -22,9 +22,8 @@ return {
         "stylua",
 
         -- python
-        "pyright",
+        "basedpyright",
         "debugpy",
-        "black",
         "ruff",
 
         -- rust
