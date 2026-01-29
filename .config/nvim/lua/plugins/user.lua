@@ -24,6 +24,13 @@ return {
     lazy = true,
   },
 
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+    lazy = true,
+  },
+
   -- Hex color viewer
   {
     "RaafatTurki/hex.nvim",
