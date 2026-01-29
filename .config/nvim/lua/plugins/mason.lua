@@ -32,7 +32,6 @@ return {
 
         -- rust
         "rust-analyzer",
-        "codelldb",
       },
     },
   },
