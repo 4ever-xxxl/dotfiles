@@ -29,6 +29,10 @@ return {
       disabled = { -- disable formatting capabilities for the listed language servers
         -- disable lua_ls formatting capability if you want to use StyLua to format your lua code
         -- "lua_ls",
+        -- Disable clangd formatting, use clang-format instead
+        "clangd",
+        -- Disable metals formatting, use conform with scalafmt instead
+        "metals",
       },
       timeout_ms = 1000, -- default format timeout
       -- filter = function(client) -- fully override the default formatting function
@@ -70,6 +74,23 @@ return {
           },
         },
       },
+      -- Metals LSP configuration for Scala/Chisel
+      metals = {
+        capabilities = { offsetEncoding = "utf-8" },
+        settings = {
+          metals = {
+            -- Enable Metals to download coursier for you
+            coursierLauncher = true,
+            -- Usebloop for build server
+            buildServer = "bloop",
+            -- Ammonite REPL support
+            enableAmmoniteRun = true,
+            -- Show type documentation on hover
+            showImplicitArguments = true,
+            showInferredType = true,
+          },
+        },
+      },
     },
     -- customize how language servers are attached
     handlers = {
@@ -81,6 +102,8 @@ return {
       pyright = false,
       -- Disable ruff LSP, use none-ls for formatting only
       ruff = false,
+      -- Enable Metals for Scala/Chisel
+      metals = function() end,
     },
     -- Configure buffer local auto commands to add when attaching a language server
     autocmds = {

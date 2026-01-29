@@ -16,6 +16,7 @@ return {
       "yaml",
       "toml",
       "markdown",
+      "scala", -- Chisel/Scala support
       -- add more arguments for adding more treesitter parsers
     },
     highlight = {

@@ -52,4 +52,83 @@ return {
     event = "VeryLazy",
     opts = {},
   },
+
+  -- == Highly Recommended Plugins ==
+
+  -- Quick file navigation
+  {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    event = "VeryLazy",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local harpoon = require "harpoon"
+      harpoon.setup {
+        global_settings = {
+          save_on_toggle = true,
+          sync_on_ui_close = true,
+        },
+      }
+    end,
+  },
+
+  -- Fast code formatter (better alternative to none-ls)
+  {
+    "stevearc/conform.nvim",
+    event = "BufWritePre",
+    opts = {
+      formatters_by_ft = {
+        lua = { "stylua" },
+        python = { "ruff_format" },
+        c = { "clang_format" },
+        cpp = { "clang_format" },
+        scala = { "scalafmt" },
+        chisel = { "scalafmt" },
+      },
+    },
+  },
+
+  -- Code runner
+  {
+    "CRAG666/code_runner.nvim",
+    event = "VeryLazy",
+    opts = {
+      filestype = {
+        python = "python3 $file",
+        lua = "lua $file",
+        cpp = "cd $dir && g++ -std=c++20 $fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
+        rust = "cd $dir && cargo run",
+        scala = "cd $dir && scala $fileName",
+      },
+    },
+  },
+
+  -- AI code completion
+  {
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "InsertEnter",
+    config = function()
+      require("copilot").setup {
+        suggestion = {
+          auto_trigger = true,
+          debounce = 75,
+        },
+      }
+    end,
+  },
+  {
+    "zbirenbaum/copilot-cmp",
+    dependencies = { "zbirenbaum/copilot.lua" },
+    opts = {},
+  },
+
+  -- Surround text objects
+  {
+    "kylechui/nvim-surround",
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup()
+    end,
+  },
 }
