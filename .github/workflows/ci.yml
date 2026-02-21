@@ -20,31 +20,30 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y stow
+          sudo apt-get install -y stow zsh tmux curl git
 
       - name: Setup environment (macOS)
         if: runner.os == 'macOS'
         run: |
-          brew install stow
+          brew install stow zsh tmux curl git
 
       - name: Run Install Script
         run: |
-          # 模拟 $HOME 目录下的配置
           ./install.sh install
 
       - name: Verify Symlinks
         run: |
-          # 验证几个关键文件是否存在并为链接
+          # Verify key files
           [ -L "$HOME/.zshrc" ] || (echo ".zshrc not linked" && exit 1)
           [ -L "$HOME/.gitconfig" ] || (echo ".gitconfig not linked" && exit 1)
           echo "Symlinks verified successfully!"
 
-      - name: Run Rollback
+      - name: Run Uninstall
         run: |
-          ./install.sh rollback
+          ./install.sh uninstall
 
-      - name: Verify Rollback
+      - name: Verify Uninstall
         run: |
           [ ! -L "$HOME/.zshrc" ] || (echo ".zshrc still linked" && exit 1)
           [ ! -L "$HOME/.gitconfig" ] || (echo ".gitconfig still linked" && exit 1)
-          echo "Rollback verified successfully!"
+          echo "Uninstall verified successfully!"

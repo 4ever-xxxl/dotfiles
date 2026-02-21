@@ -17,7 +17,7 @@ A personalized development environment configuration (dotfiles) designed for rap
   - `alacritty/`: Alacritty terminal configuration.
   - `misc/`: Other configuration files (`.vimrc`, `.env`, etc.).
 - **Installation**: Run `./install.sh install` to link all packages to `$HOME`.
-- **Rollback**: Run `./install.sh rollback` to remove all symlinks created by Stow.
+- **Uninstall**: Run `./install.sh uninstall` to remove all symlinks created by the script.
 - **XDG Compliance**: New configurations SHOULD prioritize `~/.config/<tool>/` within their respective package directory.
 
 ### 2. Shell Environment
