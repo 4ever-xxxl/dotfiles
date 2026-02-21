@@ -7,7 +7,7 @@
 
 A professional, modular, and aesthetic configuration for a modern development environment. Optimized for productivity and speed.
 
-[English](README.md) | [简体中文](README.zh-CN.md)
+**English** | [简体中文](./README.zh-CN.md)
 
 ---
 

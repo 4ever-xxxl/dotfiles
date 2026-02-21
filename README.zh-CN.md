@@ -7,7 +7,7 @@
 
 一套专业、模块化且美观的现代化开发环境配置，专为提高效率和速度而优化。
 
-[English](README.md) | [简体中文](README.zh-CN.md)
+[English](./README.md) | **简体中文**
 
 ---
 
