@@ -269,8 +269,19 @@ install_dotfiles() {
     success "基础依赖检查完成"
     echo ""
     
-    # 步骤 3: 创建符号链接
-    echo -e "${CYAN}━━━ 步骤 3/5: 创建符号链接 ━━━${NC}"
+    # 步骤 3: 安装 Oh-My-Zsh 和插件
+    echo -e "${CYAN}━━━ 步骤 3/5: 安装 Zsh 组件 ━━━${NC}"
+    install_oh_my_zsh
+    install_zsh_plugins
+    echo ""
+    
+    # 步骤 4: 安装 TPM
+    echo -e "${CYAN}━━━ 步骤 4/5: 安装 Tmux 插件管理器 ━━━${NC}"
+    install_tpm
+    echo ""
+    
+    # 步骤 5: 创建符号链接
+    echo -e "${CYAN}━━━ 步骤 5/5: 创建符号链接 ━━━${NC}"
     # Shell 配置
     create_symlink "$DOTFILES_DIR/shell/.zshrc" "$HOME/.zshrc"
     create_symlink "$DOTFILES_DIR/shell/.config/fish" "$HOME/.config/fish"
@@ -294,17 +305,6 @@ install_dotfiles() {
     if [[ -f "$DOTFILES_DIR/misc/.env.local" ]]; then
         create_symlink "$DOTFILES_DIR/misc/.env.local" "$HOME/.env.local"
     fi
-    echo ""
-    
-    # 步骤 4: 安装 Oh-My-Zsh 和插件
-    echo -e "${CYAN}━━━ 步骤 4/5: 安装 Zsh 组件 ━━━${NC}"
-    install_oh_my_zsh
-    install_zsh_plugins
-    echo ""
-    
-    # 步骤 5: 安装 TPM
-    echo -e "${CYAN}━━━ 步骤 5/5: 安装 Tmux 插件管理器 ━━━${NC}"
-    install_tpm
     echo ""
     
     # 完成
