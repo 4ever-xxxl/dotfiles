@@ -20,11 +20,20 @@
   - 优化的历史记录设置
   - 自定义别名和函数
 
+- **`.config/fish/`** - Fish Shell 配置
+  - 交互式 shell 配置
+  - 插件列表
+
 - **`.tmux.conf`** - Tmux 终端复用器配置
   - Vim 风格的键位绑定
   - 鼠标支持
   - 自定义状态栏
   - TPM 插件管理器支持
+
+- **`.config/alacritty/`** - Alacritty 终端配置
+  - GPU 加速终端模拟器
+  - 字体和主题配置
+  - 包含多种 Catppuccin 主题
 
 ### 编辑器
 
@@ -35,9 +44,14 @@
   - 常用快捷键映射
 
 - **`.config/nvim/`** - Neovim 配置
-  - 现代化的 Vim 配置
+  - 基于 AstroNvim 的现代化配置
 
 ### 开发工具
+
+- **`.gitconfig`** - Git 全局配置
+  - 用户信息
+  - 常用别名
+  - 代理设置（可选）
 
 - **`.gdbinit`** - GDB 调试器配置
   - GDB Dashboard - 模块化可视化界面
@@ -46,6 +60,10 @@
 - **`.clang-format`** - C/C++ 代码格式化
   - 基于 Google 代码风格
   - 统一代码格式
+
+- **`.condarc`** - Conda/Mamba 配置
+  - 清华镜像源
+  - 加速包下载
 
 ### 环境变量
 
@@ -64,7 +82,26 @@ cd ~/dotfiles
 
 ### 安装配置
 
-**方法 1：手动符号链接**
+**方法 1：自动安装脚本（推荐）** 🚀
+
+```bash
+cd ~/dotfiles
+./install.sh
+```
+
+脚本会自动：
+- ✅ 备份现有配置到 `~/.dotfiles_backup/`
+- ✅ 检测系统并安装依赖
+- ✅ 创建所有符号链接
+- ✅ 安装 Oh-My-Zsh 和插件
+- ✅ 安装 TPM (Tmux Plugin Manager)
+
+卸载：
+```bash
+./install.sh uninstall
+```
+
+**方法 2：手动符号链接**
 
 ```bash
 # Zsh
@@ -89,7 +126,7 @@ ln -sf ~/dotfiles/.config/nvim ~/.config/nvim
 ln -sf ~/dotfiles/.env ~/.env
 ```
 
-**方法 2：使用 GNU Stow（推荐）** ⭐
+**方法 3：使用 GNU Stow（推荐）** ⭐
 
 GNU Stow 是一个符号链接管理工具，可以轻松管理 dotfiles。
 

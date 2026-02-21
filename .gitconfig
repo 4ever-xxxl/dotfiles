@@ -1,0 +1,27 @@
+[core]
+	editor = nvim
+
+[user]
+	name = lx10ng
+	email = l3ixiong@outlook.com
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = false
+
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	lg = log --oneline --graph --decorate -10
+	last = log -1 HEAD
+	unstage = reset HEAD --
+
+# 代理设置（根据需要取消注释）
+# [http]
+# 	proxy = http://127.0.0.1:7897
+# [https]
+# 	proxy = https://127.0.0.1:7897

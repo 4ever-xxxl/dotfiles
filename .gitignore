@@ -1,1 +1,15 @@
-*
+# 忽略系统文件
+.DS_Store
+Thumbs.db
+
+# 忽略编辑器临时文件
+*.swp
+*.swo
+*~
+
+# 忽略敏感信息（如有）
+.env.local
+.env.secret
+
+# Neovim 相关
+.config/nvim/lazy-lock.json
