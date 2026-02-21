@@ -272,27 +272,27 @@ install_dotfiles() {
     # 步骤 3: 创建符号链接
     echo -e "${CYAN}━━━ 步骤 3/5: 创建符号链接 ━━━${NC}"
     # Shell 配置
-    create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
-    create_symlink "$DOTFILES_DIR/.config/fish" "$HOME/.config/fish"
+    create_symlink "$DOTFILES_DIR/shell/.zshrc" "$HOME/.zshrc"
+    create_symlink "$DOTFILES_DIR/shell/.config/fish" "$HOME/.config/fish"
     
     # 终端配置
-    create_symlink "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
-    create_symlink "$DOTFILES_DIR/.config/alacritty" "$HOME/.config/alacritty"
+    create_symlink "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
+    create_symlink "$DOTFILES_DIR/alacritty/.config/alacritty" "$HOME/.config/alacritty"
     
     # 编辑器配置
-    create_symlink "$DOTFILES_DIR/.vimrc" "$HOME/.vimrc"
-    create_symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
+    create_symlink "$DOTFILES_DIR/misc/.vimrc" "$HOME/.vimrc"
+    create_symlink "$DOTFILES_DIR/nvim/.config/nvim" "$HOME/.config/nvim"
     
     # 开发工具配置
-    create_symlink "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
-    create_symlink "$DOTFILES_DIR/.gdbinit" "$HOME/.gdbinit"
-    create_symlink "$DOTFILES_DIR/.clang-format" "$HOME/.clang-format"
-    create_symlink "$DOTFILES_DIR/.condarc" "$HOME/.condarc"
+    create_symlink "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
+    create_symlink "$DOTFILES_DIR/misc/.gdbinit" "$HOME/.gdbinit"
+    create_symlink "$DOTFILES_DIR/misc/.clang-format" "$HOME/.clang-format"
+    create_symlink "$DOTFILES_DIR/misc/.condarc" "$HOME/.condarc"
     
     # 环境变量
-    create_symlink "$DOTFILES_DIR/.env" "$HOME/.env"
-    if [[ -f "$DOTFILES_DIR/.env.local" ]]; then
-        create_symlink "$DOTFILES_DIR/.env.local" "$HOME/.env.local"
+    create_symlink "$DOTFILES_DIR/misc/.env" "$HOME/.env"
+    if [[ -f "$DOTFILES_DIR/misc/.env.local" ]]; then
+        create_symlink "$DOTFILES_DIR/misc/.env.local" "$HOME/.env.local"
     fi
     echo ""
     

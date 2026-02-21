@@ -104,69 +104,29 @@ cd ~/dotfiles
 **方法 2：手动符号链接**
 
 ```bash
-# Zsh
-ln -sf ~/dotfiles/.zshrc ~/.zshrc
+# Zsh & Fish
+ln -sf ~/dotfiles/shell/.zshrc ~/.zshrc
+ln -sf ~/dotfiles/shell/.config/fish ~/.config/fish
 
 # Tmux
-ln -sf ~/dotfiles/.tmux.conf ~/.tmux.conf
+ln -sf ~/dotfiles/tmux/.tmux.conf ~/.tmux.conf
 
-# Vim
-ln -sf ~/dotfiles/.vimrc ~/.vimrc
+# Alacritty
+ln -sf ~/dotfiles/alacritty/.config/alacritty ~/.config/alacritty
 
-# GDB
-ln -sf ~/dotfiles/.gdbinit ~/.gdbinit
+# Vim & Neovim
+ln -sf ~/dotfiles/misc/.vimrc ~/.vimrc
+ln -sf ~/dotfiles/nvim/.config/nvim ~/.config/nvim
 
-# Clang Format
-ln -sf ~/dotfiles/.clang-format ~/.clang-format
-
-# Neovim
-ln -sf ~/dotfiles/.config/nvim ~/.config/nvim
+# Git & 开发工具
+ln -sf ~/dotfiles/git/.gitconfig ~/.gitconfig
+ln -sf ~/dotfiles/misc/.gdbinit ~/.gdbinit
+ln -sf ~/dotfiles/misc/.clang-format ~/.clang-format
+ln -sf ~/dotfiles/misc/.condarc ~/.condarc
 
 # 环境变量
-ln -sf ~/dotfiles/.env ~/.env
+ln -sf ~/dotfiles/misc/.env ~/.env
 ```
-
-**方法 3：使用 GNU Stow（推荐）** ⭐
-
-GNU Stow 是一个符号链接管理工具，可以轻松管理 dotfiles。
-
-```bash
-# 安装 stow
-# Ubuntu/Debian
-sudo apt install stow
-
-# macOS
-brew install stow
-
-# Arch Linux
-sudo pacman -S stow
-
-# 使用 stow 部署配置（在 dotfiles 目录中执行）
-cd ~/dotfiles
-stow .
-
-# 这会自动创建所有必要的符号链接到 $HOME 目录
-```
-
-**取消部署：**
-```bash
-cd ~/dotfiles
-stow -D .
-```
-
-**重新部署：**
-```bash
-cd ~/dotfiles
-stow -R .
-```
-
-**方法 3：直接复制**
-
-```bash
-cp -r ~/dotfiles/.* ~/
-```
-
-> ⚠️ **注意**：直接复制会失去与仓库的链接，后续更新需要手动同步。
 
 ### 重新加载配置
 

@@ -1,0 +1,50 @@
+name: Dotfiles CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-installation:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup environment (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y stow
+
+      - name: Setup environment (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install stow
+
+      - name: Run Install Script
+        run: |
+          # 模拟 $HOME 目录下的配置
+          ./install.sh install
+
+      - name: Verify Symlinks
+        run: |
+          # 验证几个关键文件是否存在并为链接
+          [ -L "$HOME/.zshrc" ] || (echo ".zshrc not linked" && exit 1)
+          [ -L "$HOME/.gitconfig" ] || (echo ".gitconfig not linked" && exit 1)
+          echo "Symlinks verified successfully!"
+
+      - name: Run Rollback
+        run: |
+          ./install.sh rollback
+
+      - name: Verify Rollback
+        run: |
+          [ ! -L "$HOME/.zshrc" ] || (echo ".zshrc still linked" && exit 1)
+          [ ! -L "$HOME/.gitconfig" ] || (echo ".gitconfig still linked" && exit 1)
+          echo "Rollback verified successfully!"
