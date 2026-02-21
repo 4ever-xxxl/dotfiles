@@ -296,6 +296,8 @@ install_dotfiles() {
     
     # 开发工具配置
     create_symlink "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
+    create_symlink "$DOTFILES_DIR/git/.gitconfig-personal" "$HOME/.gitconfig-personal"
+    create_symlink "$DOTFILES_DIR/git/.gitconfig-work" "$HOME/.gitconfig-work"
     create_symlink "$DOTFILES_DIR/misc/.gdbinit" "$HOME/.gdbinit"
     create_symlink "$DOTFILES_DIR/misc/.clang-format" "$HOME/.clang-format"
     create_symlink "$DOTFILES_DIR/misc/.condarc" "$HOME/.condarc"
