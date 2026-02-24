@@ -31,24 +31,44 @@ setopt HIST_IGNORE_SPACE     # ignore commands starting with space
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Disable auto-update to avoid slowdown
+# Disable auto-update and optimize completion
 zstyle ':omz:update' mode disabled
+zstyle ':omz:completion' use-cache yes
+zstyle ':omz:completion' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
+
+# Speed up compinit by using a cache file
+autoload -Uz compinit
+for dump in "$HOME/.zcompdump"(N.mh+24); do
+  compinit
+done
+compinit -C
 
 plugins=(
   git
   zsh-syntax-highlighting
   zsh-autosuggestions
   history-substring-search
-  autojump
   docker
-  python
-  command-not-found
   extract
   copybuffer
   sudo
 )
 
 source $ZSH/oh-my-zsh.sh
+
+# =============================================================================
+# Key Bindings & FZF Integration
+# =============================================================================
+# Silent and robust fzf loading to avoid instant prompt warnings
+if command -v fzf &>/dev/null; then
+  _fzf_init=$(fzf --zsh 2>/dev/null)
+  if [ $? -eq 0 ]; then
+    eval "$_fzf_init"
+  elif [ -f ~/.fzf.zsh ]; then
+    source ~/.fzf.zsh
+  fi
+  unset _fzf_init
+fi
 
 # =============================================================================
 # Powerlevel10k Configuration
@@ -59,37 +79,15 @@ autoload -U colors && colors
 export GROFF_NO_SGR=1
 
 # =============================================================================
-# Node Version Manager (fnm) - Lazy loaded for faster startup
+# Conda/Mamba Configuration (Lazy Load)
 # =============================================================================
-fnm_lazy_init() {
-  eval "$(fnm env)"
-  # Replace this function with the actual fnm init
-  unset fnm_lazy_init
-}
-
-# Load fnm only when needed (first use of node/npm)
-node() { fnm_lazy_init; command node "$@"; }
-npm() { fnm_lazy_init; command npm "$@"; }
-pnpm() { fnm_lazy_init; command pnpm "$@"; }
-yarn() { fnm_lazy_init; command yarn "$@"; }
-
-# =============================================================================
-# Conda/Mamba Configuration
-# =============================================================================
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/opt/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/anaconda3/bin:$PATH"
-    fi
+if [ -f "/opt/anaconda3/bin/conda" ]; then
+    conda() {
+        unset -f conda
+        eval "$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+        conda "$@"
+    }
 fi
-unset __conda_setup
-# <<< conda initialize <<<
 
 # =============================================================================
 # Useful Aliases
@@ -113,16 +111,6 @@ alias ga='git add'
 alias gc='git commit'
 alias gp='git push'
 alias gl='git log --oneline -10'
-
-# =============================================================================
-# Key Bindings & FZF Integration (deferred to avoid instant prompt issues)
-# =============================================================================
-# FZF will be loaded after instant prompt
-{
-  if command -v fzf &> /dev/null; then
-    source <(fzf --zsh)
-  fi
-} &>/dev/null
 
 # =============================================================================
 # Editor Configuration
