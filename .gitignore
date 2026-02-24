@@ -12,4 +12,4 @@ Thumbs.db
 .env.secret
 
 # Neovim 相关
-.config/nvim/lazy-lock.json
+nvim/.config/nvim/lazy-lock.json
