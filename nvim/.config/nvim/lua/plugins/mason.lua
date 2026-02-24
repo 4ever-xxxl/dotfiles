@@ -35,7 +35,6 @@ return {
 
         -- scala/chisel
         -- Note: Metals is installed automatically by nvim-metals via coursier
-        "scalafmt",
       },
     },
   },
