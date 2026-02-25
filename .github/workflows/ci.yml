@@ -20,12 +20,12 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y stow zsh tmux curl git
+          sudo apt-get install -y zsh tmux curl git
 
       - name: Setup environment (macOS)
         if: runner.os == 'macOS'
         run: |
-          brew install stow zsh tmux curl git
+          brew install zsh tmux curl git
 
       - name: Run Install Script
         run: |

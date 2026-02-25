@@ -243,6 +243,33 @@ install_tpm() {
 }
 
 #───────────────────────────────────────────────────────────────────────────────
+# 检查现代命令行工具
+#───────────────────────────────────────────────────────────────────────────────
+
+check_modern_tools() {
+    local missing=()
+
+    command -v nvim     &>/dev/null || missing+=("nvim     (Neovim)       — https://github.com/neovim/neovim/releases")
+    command -v eza      &>/dev/null || missing+=("eza      (现代 ls)       — https://github.com/eza-community/eza")
+    command -v fzf      &>/dev/null || missing+=("fzf      (模糊搜索)      — https://github.com/junegunn/fzf")
+    command -v lazygit  &>/dev/null || missing+=("lazygit  (Git TUI)      — https://github.com/jesseduffield/lazygit")
+
+    # bat 在 Debian/Ubuntu 上叫 batcat
+    if ! command -v bat &>/dev/null && ! command -v batcat &>/dev/null; then
+        missing+=("bat      (现代 cat)      — https://github.com/sharkdp/bat")
+    fi
+
+    if [[ ${#missing[@]} -eq 0 ]]; then
+        success "所有现代工具已就绪"
+    else
+        warning "以下工具未安装（已定义别名，建议手动安装）:"
+        for tool in "${missing[@]}"; do
+            echo "    • $tool"
+        done
+    fi
+}
+
+#───────────────────────────────────────────────────────────────────────────────
 # 主安装流程
 #───────────────────────────────────────────────────────────────────────────────
 
@@ -258,12 +285,12 @@ install_dotfiles() {
     echo ""
     
     # 步骤 1: 备份现有配置
-    echo -e "${CYAN}━━━ 步骤 1/5: 备份现有配置 ━━━${NC}"
+    echo -e "${CYAN}━━━ 步骤 1/6: 备份现有配置 ━━━${NC}"
     backup_existing
     echo ""
-    
+
     # 步骤 2: 安装基础依赖
-    echo -e "${CYAN}━━━ 步骤 2/5: 检查基础依赖 ━━━${NC}"
+    echo -e "${CYAN}━━━ 步骤 2/6: 检查基础依赖 ━━━${NC}"
     command -v git &>/dev/null || install_package git
     command -v zsh &>/dev/null || install_package zsh
     command -v tmux &>/dev/null || install_package tmux
@@ -271,20 +298,25 @@ install_dotfiles() {
     command -v curl &>/dev/null || install_package curl
     success "基础依赖检查完成"
     echo ""
-    
-    # 步骤 3: 安装 Oh-My-Zsh 和插件
-    echo -e "${CYAN}━━━ 步骤 3/5: 安装 Zsh 组件 ━━━${NC}"
+
+    # 步骤 3: 检查现代工具
+    echo -e "${CYAN}━━━ 步骤 3/6: 检查现代工具 ━━━${NC}"
+    check_modern_tools
+    echo ""
+
+    # 步骤 4: 安装 Oh-My-Zsh 和插件
+    echo -e "${CYAN}━━━ 步骤 4/6: 安装 Zsh 组件 ━━━${NC}"
     install_oh_my_zsh
     install_zsh_plugins
     echo ""
-    
-    # 步骤 4: 安装 TPM
-    echo -e "${CYAN}━━━ 步骤 4/5: 安装 Tmux 插件管理器 ━━━${NC}"
+
+    # 步骤 5: 安装 TPM
+    echo -e "${CYAN}━━━ 步骤 5/6: 安装 Tmux 插件管理器 ━━━${NC}"
     install_tpm
     echo ""
-    
-    # 步骤 5: 创建符号链接
-    echo -e "${CYAN}━━━ 步骤 5/5: 创建符号链接 ━━━${NC}"
+
+    # 步骤 6: 创建符号链接
+    echo -e "${CYAN}━━━ 步骤 6/6: 创建符号链接 ━━━${NC}"
     # Shell 配置
     create_symlink "$DOTFILES_DIR/shell/.zshrc" "$HOME/.zshrc"
     create_symlink "$DOTFILES_DIR/shell/.p10k.zsh" "$HOME/.p10k.zsh"
