@@ -118,7 +118,7 @@ backup_existing() {
     local backup_dir="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
     local files_to_backup=(
         ".zshrc"
-        ".p10k.zsh"
+        ".zsh_plugins.txt"
         ".tmux.conf"
         ".vimrc"
         ".gitconfig"
@@ -195,59 +195,38 @@ create_symlink() {
 }
 
 #───────────────────────────────────────────────────────────────────────────────
-# 安装 Oh-My-Zsh
+# 安装 antidote (Zsh 插件管理器)
 #───────────────────────────────────────────────────────────────────────────────
 
-install_oh_my_zsh() {
+install_antidote() {
     if $DRY_RUN; then
-        info "[DRY-RUN] 跳过 Oh-My-Zsh 安装"
+        info "[DRY-RUN] 跳过 antidote 安装"
         return
     fi
-    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
-        info "安装 Oh-My-Zsh..."
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-        success "Oh-My-Zsh 安装完成"
+    if [[ ! -d "$HOME/.antidote" ]]; then
+        info "安装 antidote 插件管理器..."
+        git clone --depth=1 https://github.com/mattmc3/antidote.git "$HOME/.antidote"
+        success "antidote 安装完成"
     else
-        success "Oh-My-Zsh 已安装"
+        success "antidote 已安装"
     fi
 }
 
 #───────────────────────────────────────────────────────────────────────────────
-# 安装 Zsh 插件
+# 安装 Starship 提示符
 #───────────────────────────────────────────────────────────────────────────────
 
-install_zsh_plugins() {
+install_starship() {
     if $DRY_RUN; then
-        info "[DRY-RUN] 跳过 Zsh 插件安装"
+        info "[DRY-RUN] 跳过 Starship 安装"
         return
     fi
-    local ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
-    
-    # Powerlevel10k
-    if [[ ! -d "$ZSH_CUSTOM/themes/powerlevel10k" ]]; then
-        info "安装 Powerlevel10k 主题..."
-        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM/themes/powerlevel10k"
-        success "Powerlevel10k 安装完成"
+    if ! command -v starship &>/dev/null; then
+        info "安装 Starship..."
+        curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir "$HOME/.local/bin" --yes
+        success "Starship 安装完成"
     else
-        success "Powerlevel10k 已安装"
-    fi
-    
-    # zsh-syntax-highlighting
-    if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]]; then
-        info "安装 zsh-syntax-highlighting..."
-        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
-        success "zsh-syntax-highlighting 安装完成"
-    else
-        success "zsh-syntax-highlighting 已安装"
-    fi
-    
-    # zsh-autosuggestions
-    if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]]; then
-        info "安装 zsh-autosuggestions..."
-        git clone https://github.com/zsh-users/zsh-autosuggestions.git "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
-        success "zsh-autosuggestions 安装完成"
-    else
-        success "zsh-autosuggestions 已安装"
+        success "Starship 已安装"
     fi
 }
 
@@ -332,10 +311,10 @@ install_dotfiles() {
     check_modern_tools
     echo ""
 
-    # 步骤 4: 安装 Oh-My-Zsh 和插件
-    echo -e "${CYAN}━━━ 步骤 4/6: 安装 Zsh 组件 ━━━${NC}"
-    install_oh_my_zsh
-    install_zsh_plugins
+    # 步骤 4: 安装 Zsh 插件管理器和 Starship
+    echo -e "${CYAN}━━━ 步骤 4/6: 安装 antidote 和 Starship ━━━${NC}"
+    install_antidote
+    install_starship
     echo ""
 
     # 步骤 5: 安装 TPM
@@ -347,7 +326,7 @@ install_dotfiles() {
     echo -e "${CYAN}━━━ 步骤 6/6: 创建符号链接 ━━━${NC}"
     # Shell 配置
     create_symlink "$DOTFILES_DIR/shell/.zshrc" "$HOME/.zshrc"
-    create_symlink "$DOTFILES_DIR/shell/.p10k.zsh" "$HOME/.p10k.zsh"
+    create_symlink "$DOTFILES_DIR/shell/.zsh_plugins.txt" "$HOME/.zsh_plugins.txt"
     create_symlink "$DOTFILES_DIR/shell/.config/fish" "$HOME/.config/fish"
     
     # 终端配置
@@ -388,7 +367,8 @@ install_dotfiles() {
     echo ""
     echo -e "${YELLOW}后续步骤:${NC}"
     echo "  1. 重新启动终端或运行: source ~/.zshrc"
-    echo "  2. Powerlevel10k 配置已链接；如需重新调整外观，运行: p10k configure"
+    echo "  2. 如需自定义 Starship 提示符，编辑 ~/.config/starship.toml"
+    echo "     或运行: starship preset <name> -- 查看预设方案"
     echo "  3. 进入 tmux 后按 Ctrl+a I 安装 tmux 插件"
     echo "  4. 按需编辑 ~/dotfiles/misc/.env.local（代理、conda 路径等本机配置）"
     echo ""
@@ -409,6 +389,7 @@ uninstall_dotfiles() {
     
     local files=(
         "$HOME/.zshrc"
+        "$HOME/.zsh_plugins.txt"
         "$HOME/.tmux.conf"
         "$HOME/.vimrc"
         "$HOME/.gitconfig"

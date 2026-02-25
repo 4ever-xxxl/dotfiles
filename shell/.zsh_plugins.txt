@@ -1,0 +1,14 @@
+# Autosuggestions
+zsh-users/zsh-autosuggestions
+
+# History substring search
+zsh-users/zsh-history-substring-search
+
+# OMZ utility plugins (loaded individually, no full OMZ framework)
+ohmyzsh/ohmyzsh path:plugins/extract
+ohmyzsh/ohmyzsh path:plugins/sudo
+ohmyzsh/ohmyzsh path:plugins/copybuffer
+ohmyzsh/ohmyzsh path:plugins/docker
+
+# Syntax highlighting (must be last)
+zsh-users/zsh-syntax-highlighting
