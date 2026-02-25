@@ -10,5 +10,11 @@ ohmyzsh/ohmyzsh path:plugins/sudo
 ohmyzsh/ohmyzsh path:plugins/copybuffer
 ohmyzsh/ohmyzsh path:plugins/docker
 
-# Syntax highlighting (must be last)
-zsh-users/zsh-syntax-highlighting
+# Additional completions
+zsh-users/zsh-completions
+
+# Replace default completion menu with fzf
+Aloxaf/fzf-tab
+
+# Syntax highlighting (must be last, replacing slower zsh-users/zsh-syntax-highlighting)
+zdharma-continuum/fast-syntax-highlighting

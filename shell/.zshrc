@@ -15,19 +15,39 @@ setopt SHARE_HISTORY         # share history across sessions
 # =============================================================================
 # Antidote Plugin Manager
 # =============================================================================
+# Some Oh My Zsh plugins require ZSH_CACHE_DIR to be defined
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
+if [[ ! -d "$ZSH_CACHE_DIR/completions" ]]; then
+    mkdir -p "$ZSH_CACHE_DIR/completions"
+fi
+
 if [[ -f "${ZDOTDIR:-$HOME}/.antidote/antidote.zsh" ]]; then
     source "${ZDOTDIR:-$HOME}/.antidote/antidote.zsh"
     antidote load "${ZDOTDIR:-$HOME}/.zsh_plugins.txt"
 fi
 
 # =============================================================================
-# Completions
+# Completions & Suggestions Configuration
 # =============================================================================
+# Improve zsh-autosuggestions performance and intelligence
+export ZSH_AUTOSUGGEST_USE_ASYNC=1
+export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+
+# Completion styling (case-insensitive, menu selection)
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza -1 --color=always $realpath'
+
 autoload -Uz compinit
 for dump in "$HOME/.zcompdump"(N.mh+24); do
     compinit
 done
 compinit -C
+# Compile zcompdump for faster startup
+if [[ -s "$HOME/.zcompdump" && (! -s "${HOME}/.zcompdump.zwc" || "$HOME/.zcompdump" -nt "${HOME}/.zcompdump.zwc") ]]; then
+    zcompile "$HOME/.zcompdump"
+fi
 
 # =============================================================================
 # Key Bindings
