@@ -223,6 +223,7 @@ install_starship() {
     fi
     if ! command -v starship &>/dev/null; then
         info "安装 Starship..."
+        mkdir -p "$HOME/.local/bin"
         curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir "$HOME/.local/bin" --yes
         success "Starship 安装完成"
     else
