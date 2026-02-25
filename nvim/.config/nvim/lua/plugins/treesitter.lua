@@ -10,6 +10,7 @@ return {
       "python",
       "c",
       "cpp",
+      "cuda",
       "rust",
       "bash",
       "json",

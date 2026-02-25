@@ -344,6 +344,7 @@ install_dotfiles() {
     create_symlink "$DOTFILES_DIR/git/.gitconfig-work" "$HOME/.gitconfig-work"
     create_symlink "$DOTFILES_DIR/misc/.gdbinit" "$HOME/.gdbinit"
     create_symlink "$DOTFILES_DIR/misc/.clang-format" "$HOME/.clang-format"
+    create_symlink "$DOTFILES_DIR/misc/clangd_config.yaml" "$HOME/.config/clangd/config.yaml"
     create_symlink "$DOTFILES_DIR/misc/.condarc" "$HOME/.condarc"
     
     # 环境变量
@@ -396,6 +397,7 @@ uninstall_dotfiles() {
         "$HOME/.gitconfig"
         "$HOME/.gdbinit"
         "$HOME/.clang-format"
+        "$HOME/.config/clangd/config.yaml"
         "$HOME/.condarc"
         "$HOME/.env"
         "$HOME/.env.local"

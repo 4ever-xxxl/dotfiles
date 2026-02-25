@@ -1,0 +1,11 @@
+---
+If:
+  PathMatch: [.*\.cu, .*\.cuh]
+CompileFlags:
+  Add:
+    - "-x"
+    - "cuda"
+    - "--cuda-path=/usr/local/cuda"
+    - "--cuda-gpu-arch=native"
+    - "-I/usr/local/cuda/include"
+    - "-stdlib=libc++"

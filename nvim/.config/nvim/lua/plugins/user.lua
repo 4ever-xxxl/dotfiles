@@ -82,6 +82,7 @@ return {
         python = { "ruff_format" },
         c = { "clang_format" },
         cpp = { "clang_format" },
+        cuda = { "clang_format" },
         scala = { "scalafmt" },
         chisel = { "scalafmt" },
       },

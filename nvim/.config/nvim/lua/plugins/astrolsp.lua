@@ -46,7 +46,9 @@ return {
     -- customize language server configuration options passed to `lspconfig`
     ---@diagnostic disable: missing-fields
     config = {
-      -- clangd = { capabilities = { offsetEncoding = "utf-8" } },
+      clangd = {
+        capabilities = { offsetEncoding = "utf-8" },
+      },
       -- Use basedpyright as primary Python LSP
       basedpyright = {
         capabilities = { offsetEncoding = "utf-8" },
@@ -98,6 +100,17 @@ return {
       -- function(server, opts) require("lspconfig")[server].setup(opts) end
 
       -- the key is the server that is being setup with `lspconfig`
+      clangd = function(_, opts)
+        opts.cmd = {
+          "clangd",
+          "--background-index",
+          "--clang-tidy",
+          "--header-insertion=iwyu",
+          "--completion-style=detailed",
+          "--query-driver=/usr/bin/g++,/usr/bin/clang++,/usr/bin/nvcc,/usr/local/cuda/bin/nvcc",
+        }
+        require("lspconfig").clangd.setup(opts)
+      end,
       -- Disable pyright to use basedpyright instead
       pyright = false,
       -- Disable ruff LSP, use none-ls for formatting only
