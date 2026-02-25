@@ -107,9 +107,12 @@ backup_existing() {
     local backup_dir="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
     local files_to_backup=(
         ".zshrc"
+        ".p10k.zsh"
         ".tmux.conf"
         ".vimrc"
         ".gitconfig"
+        ".gitconfig-personal"
+        ".gitconfig-work"
         ".gdbinit"
         ".clang-format"
         ".condarc"
@@ -284,6 +287,7 @@ install_dotfiles() {
     echo -e "${CYAN}━━━ 步骤 5/5: 创建符号链接 ━━━${NC}"
     # Shell 配置
     create_symlink "$DOTFILES_DIR/shell/.zshrc" "$HOME/.zshrc"
+    create_symlink "$DOTFILES_DIR/shell/.p10k.zsh" "$HOME/.p10k.zsh"
     create_symlink "$DOTFILES_DIR/shell/.config/fish" "$HOME/.config/fish"
     
     # 终端配置
@@ -316,7 +320,7 @@ install_dotfiles() {
     echo ""
     echo -e "${YELLOW}后续步骤:${NC}"
     echo "  1. 重新启动终端或运行: source ~/.zshrc"
-    echo "  2. 如需配置 Powerlevel10k 主题，运行: p10k configure"
+    echo "  2. Powerlevel10k 配置已链接；如需重新调整外观，运行: p10k configure"
     echo "  3. 进入 tmux 后按 Ctrl+a I 安装 tmux 插件"
     echo ""
     echo -e "${BLUE}备份位置: ~/.dotfiles_backup/${NC}"
