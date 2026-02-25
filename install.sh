@@ -17,6 +17,9 @@ NC='\033[0m' # No Color
 # 获取脚本所在目录
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Dry-run 模式：仅预览操作，不实际执行
+DRY_RUN=false
+
 #───────────────────────────────────────────────────────────────────────────────
 # 工具函数
 #───────────────────────────────────────────────────────────────────────────────
@@ -66,6 +69,10 @@ detect_os() {
 
 install_package() {
     local package=$1
+    if $DRY_RUN; then
+        info "[DRY-RUN] 将安装: $package"
+        return
+    fi
     local os=$(detect_os)
     
     case $os in
@@ -104,6 +111,10 @@ install_package() {
 #───────────────────────────────────────────────────────────────────────────────
 
 backup_existing() {
+    if $DRY_RUN; then
+        info "[DRY-RUN] 跳过备份"
+        return
+    fi
     local backup_dir="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
     local files_to_backup=(
         ".zshrc"
@@ -155,7 +166,12 @@ backup_existing() {
 create_symlink() {
     local src=$1
     local dest=$2
-    
+
+    if $DRY_RUN; then
+        info "[DRY-RUN] 将链接: $dest -> $src"
+        return
+    fi
+
     # 如果目标已存在且不是符号链接，则跳过（已备份）
     if [[ -e "$dest" && ! -L "$dest" ]]; then
         rm -rf "$dest"
@@ -183,6 +199,10 @@ create_symlink() {
 #───────────────────────────────────────────────────────────────────────────────
 
 install_oh_my_zsh() {
+    if $DRY_RUN; then
+        info "[DRY-RUN] 跳过 Oh-My-Zsh 安装"
+        return
+    fi
     if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
         info "安装 Oh-My-Zsh..."
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
@@ -197,6 +217,10 @@ install_oh_my_zsh() {
 #───────────────────────────────────────────────────────────────────────────────
 
 install_zsh_plugins() {
+    if $DRY_RUN; then
+        info "[DRY-RUN] 跳过 Zsh 插件安装"
+        return
+    fi
     local ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
     
     # Powerlevel10k
@@ -232,6 +256,10 @@ install_zsh_plugins() {
 #───────────────────────────────────────────────────────────────────────────────
 
 install_tpm() {
+    if $DRY_RUN; then
+        info "[DRY-RUN] 跳过 TPM 安装"
+        return
+    fi
     if [[ ! -d "$HOME/.tmux/plugins/tpm" ]]; then
         info "安装 TPM (Tmux Plugin Manager)..."
         git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
@@ -340,6 +368,14 @@ install_dotfiles() {
     
     # 环境变量
     create_symlink "$DOTFILES_DIR/misc/.env" "$HOME/.env"
+    if [[ ! -f "$DOTFILES_DIR/misc/.env.local" && -f "$DOTFILES_DIR/misc/.env.local.example" ]]; then
+        if $DRY_RUN; then
+            info "[DRY-RUN] 将从模板创建 misc/.env.local"
+        else
+            cp "$DOTFILES_DIR/misc/.env.local.example" "$DOTFILES_DIR/misc/.env.local"
+            warning "已从模板创建 misc/.env.local，请按需编辑代理、conda 路径等本机配置"
+        fi
+    fi
     if [[ -f "$DOTFILES_DIR/misc/.env.local" ]]; then
         create_symlink "$DOTFILES_DIR/misc/.env.local" "$HOME/.env.local"
     fi
@@ -354,6 +390,7 @@ install_dotfiles() {
     echo "  1. 重新启动终端或运行: source ~/.zshrc"
     echo "  2. Powerlevel10k 配置已链接；如需重新调整外观，运行: p10k configure"
     echo "  3. 进入 tmux 后按 Ctrl+a I 安装 tmux 插件"
+    echo "  4. 按需编辑 ~/dotfiles/misc/.env.local（代理、conda 路径等本机配置）"
     echo ""
     echo -e "${BLUE}备份位置: ~/.dotfiles_backup/${NC}"
     echo ""
@@ -406,9 +443,10 @@ show_help() {
     echo "用法: $0 [选项]"
     echo ""
     echo "选项:"
-    echo "  install     安装 dotfiles（默认）"
-    echo "  uninstall   卸载 dotfiles（移除符号链接）"
-    echo "  help        显示此帮助信息"
+    echo "  install        安装 dotfiles（默认）"
+    echo "  --dry-run, -n  预览安装操作，不实际执行任何写入"
+    echo "  uninstall      卸载 dotfiles（移除符号链接）"
+    echo "  help           显示此帮助信息"
     echo ""
 }
 
@@ -419,6 +457,12 @@ show_help() {
 main() {
     case "${1:-install}" in
         install)
+            install_dotfiles
+            ;;
+        --dry-run|-n)
+            DRY_RUN=true
+            info "=== DRY-RUN 模式：仅预览操作，不写入任何文件 ==="
+            echo ""
             install_dotfiles
             ;;
         uninstall)
