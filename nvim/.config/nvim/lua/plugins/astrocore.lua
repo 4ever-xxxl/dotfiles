@@ -42,7 +42,7 @@ return {
         number = true, -- sets vim.opt.number
         spell = false, -- sets vim.opt.spell
         signcolumn = "yes:1", -- sets vim.opt.signcolumn to yes with fixed width for performance
-        wrap = false, -- sets vim.opt.wrap
+        wrap = true, -- sets vim.opt.wrap
         scrolloff = 5, -- lines to keep visible above/below cursor
         pumheight = 10, -- limit completion menu height
       },
