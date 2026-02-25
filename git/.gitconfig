@@ -22,7 +22,7 @@
 	last = log -1 HEAD
 	unstage = reset HEAD --
 
-# [http]
-# 	proxy = http://127.0.0.1:7897
-# [https]
-# 	proxy = https://127.0.0.1:7897
+[http]
+	proxy = http://127.0.0.1:7897
+[https]
+	proxy = https://127.0.0.1:7897
