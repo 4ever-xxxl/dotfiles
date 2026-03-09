@@ -24,7 +24,7 @@ normal.family = "JetBrains Mono Nerd Font"
 
 [terminal]
 osc52 = "CopyPaste"
-shell = "fish"
+shell = "zsh"
 # {program = "wsl", args = ["--cd ~"]} 
 
 [keyboard]
