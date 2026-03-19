@@ -1,12 +1,6 @@
 -- This will run last in the setup process.
 -- This is just pure lua so anything that doesn't fit in the normal config locations above can go here
 
--- Performance optimization: set updatetime for faster LSP feedback
-vim.opt.updatetime = 250
-
--- Ensure stylua is used for Lua formatting
-vim.g.stylua_formatting = true
-
 -- 快速切换主题功能
 local themes = {
 	"astrotheme",
@@ -23,7 +17,15 @@ local themes = {
 	"catppuccin-macchiato",
 	"catppuccin-mocha",
 }
-local current = 1
+local function current_theme_index()
+	local active = vim.g.colors_name
+	for i, theme in ipairs(themes) do
+		if theme == active then return i end
+	end
+	return 1
+end
+
+local current = current_theme_index()
 
 -- 安全应用主题，避免报错中断
 local function apply_theme(name)

@@ -46,13 +46,6 @@ return {
     opts = {},
   },
 
-  -- Session persistence
-  {
-    "olimorris/persisted.nvim",
-    event = "VeryLazy",
-    opts = {},
-  },
-
   -- == Highly Recommended Plugins ==
 
   -- Quick file navigation
@@ -64,11 +57,25 @@ return {
     config = function()
       local harpoon = require "harpoon"
       harpoon.setup {
-        global_settings = {
+        settings = {
           save_on_toggle = true,
           sync_on_ui_close = true,
         },
       }
+
+      vim.keymap.set("n", "<Leader>ha", function() harpoon:list():add() end, { desc = "Harpoon add file" })
+      vim.keymap.set(
+        "n",
+        "<C-e>",
+        function() harpoon.ui:toggle_quick_menu(harpoon:list()) end,
+        { desc = "Harpoon menu" }
+      )
+      vim.keymap.set("n", "<Leader>h1", function() harpoon:list():select(1) end, { desc = "Harpoon file 1" })
+      vim.keymap.set("n", "<Leader>h2", function() harpoon:list():select(2) end, { desc = "Harpoon file 2" })
+      vim.keymap.set("n", "<Leader>h3", function() harpoon:list():select(3) end, { desc = "Harpoon file 3" })
+      vim.keymap.set("n", "<Leader>h4", function() harpoon:list():select(4) end, { desc = "Harpoon file 4" })
+      vim.keymap.set("n", "<Leader>hp", function() harpoon:list():prev() end, { desc = "Harpoon prev" })
+      vim.keymap.set("n", "<Leader>hn", function() harpoon:list():next() end, { desc = "Harpoon next" })
     end,
   },
 
@@ -94,7 +101,7 @@ return {
     "CRAG666/code_runner.nvim",
     event = "VeryLazy",
     opts = {
-      filestype = {
+      filetype = {
         python = "python3 $file",
         lua = "lua $file",
         cpp = "cd $dir && g++ -std=c++20 $fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
@@ -104,7 +111,7 @@ return {
     },
   },
 
-  -- AI code completion
+  -- AI code completion (ghost text mode)
   {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
@@ -118,11 +125,6 @@ return {
       }
     end,
   },
-  {
-    "zbirenbaum/copilot-cmp",
-    dependencies = { "zbirenbaum/copilot.lua" },
-    opts = {},
-  },
 
   -- Surround text objects
   {
@@ -131,5 +133,12 @@ return {
     config = function()
       require("nvim-surround").setup()
     end,
+  },
+
+  -- Embed nvim statusline into tmux status bar
+  {
+    "vimpostor/vim-tpipeline",
+    lazy = false,
+    cond = vim.env.TMUX ~= nil,
   },
 }

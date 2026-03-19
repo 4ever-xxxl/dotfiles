@@ -29,12 +29,6 @@ return {
         cu = "cuda",
         cuh = "cuda",
       },
-      filename = {
-        [".foorc"] = "fooscript",
-      },
-      pattern = {
-        [".*/etc/foo/.*"] = "fooscript",
-      },
     },
     -- vim options can be configured here
     options = {
@@ -46,6 +40,7 @@ return {
         wrap = true, -- sets vim.opt.wrap
         scrolloff = 5, -- lines to keep visible above/below cursor
         pumheight = 10, -- limit completion menu height
+        updatetime = 250, -- faster LSP feedback
       },
       g = { -- vim.g.<key>
         -- configure global vim variables (vim.g)
