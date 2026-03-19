@@ -134,11 +134,4 @@ return {
       require("nvim-surround").setup()
     end,
   },
-
-  -- Embed nvim statusline into tmux status bar
-  {
-    "vimpostor/vim-tpipeline",
-    lazy = false,
-    cond = vim.env.TMUX ~= nil,
-  },
 }
