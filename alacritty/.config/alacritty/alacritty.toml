@@ -20,7 +20,7 @@ decorations_theme_variant = "Dark" # "Light" #
 
 [font]
 size = 12.0
-normal.family = "Maple Mono CN NF"
+normal.family = "Maple Mono NF CN"
 
 [terminal]
 osc52 = "CopyPaste"
