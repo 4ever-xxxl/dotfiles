@@ -119,8 +119,28 @@ return {
     config = function()
       require("copilot").setup {
         suggestion = {
+          enabled = true,
           auto_trigger = true,
-          debounce = 75,
+          debounce = 150, -- 增加 debounce 时间，减少请求频率
+          keymap = {
+            accept = "<M-;>",
+            accept_word = "<M-w>",
+            accept_line = "<M-j>",
+            next = "<M-]>",
+            prev = "<M-[>",
+            dismiss = "<C-]>",
+          },
+        },
+        panel = { enabled = false }, -- 禁用 panel 以节省资源
+        filetypes = {
+          markdown = true,
+          help = false,
+          gitcommit = false,
+          gitrebase = false,
+          hgcommit = false,
+          svn = false,
+          cvs = false,
+          ["."] = false,
         },
       }
     end,

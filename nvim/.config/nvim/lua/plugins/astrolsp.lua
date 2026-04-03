@@ -76,6 +76,13 @@ return {
           },
         },
       },
+      -- jdtls configuration
+      jdtls = {
+        root_dir = function(fname)
+          local util = require "lspconfig.util"
+          return util.root_pattern("pom.xml", "build.gradle", ".git")(fname) or vim.fn.getcwd()
+        end,
+      },
       -- Metals LSP configuration for Scala/Chisel
       metals = {
         capabilities = { offsetEncoding = "utf-8" },
