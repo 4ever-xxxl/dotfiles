@@ -71,6 +71,22 @@ detect_os() {
 }
 
 #───────────────────────────────────────────────────────────────────────────────
+# 跨平台路径
+#───────────────────────────────────────────────────────────────────────────────
+
+# clangd 配置路径因平台而异：
+#   Linux/BSD  → $XDG_CONFIG_HOME 或 ~/.config/clangd/config.yaml
+#   macOS      → ~/Library/Preferences/clangd/config.yaml
+# 参考: https://clangd.llvm.org/config
+clangd_config_path() {
+    if [[ "$(detect_os)" == "macos" ]]; then
+        echo "$HOME/Library/Preferences/clangd/config.yaml"
+    else
+        echo "$HOME/.config/clangd/config.yaml"
+    fi
+}
+
+#───────────────────────────────────────────────────────────────────────────────
 # 包管理器安装函数
 #───────────────────────────────────────────────────────────────────────────────
 
@@ -384,7 +400,7 @@ install_dotfiles() {
     create_symlink "$DOTFILES_DIR/git/.gitconfig-work" "$HOME/.gitconfig-work"
     create_symlink "$DOTFILES_DIR/misc/.gdbinit" "$HOME/.gdbinit"
     create_symlink "$DOTFILES_DIR/misc/.clang-format" "$HOME/.clang-format"
-    create_symlink "$DOTFILES_DIR/misc/clangd_config.yaml" "$HOME/.config/clangd/config.yaml"
+    create_symlink "$DOTFILES_DIR/misc/clangd_config.yaml" "$(clangd_config_path)"
     create_symlink "$DOTFILES_DIR/misc/.condarc" "$HOME/.condarc"
     
     # 环境变量
@@ -439,7 +455,7 @@ uninstall_dotfiles() {
         "$HOME/.gitconfig"
         "$HOME/.gdbinit"
         "$HOME/.clang-format"
-        "$HOME/.config/clangd/config.yaml"
+        "$(clangd_config_path)"
         "$HOME/.condarc"
         "$HOME/.env"
         "$HOME/.env.local"

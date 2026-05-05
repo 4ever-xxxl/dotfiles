@@ -82,7 +82,12 @@ jobs:
           check .gitconfig-work
           check .gdbinit
           check .clang-format
-          check .config/clangd/config.yaml
+          # clangd 配置路径平台不同，CI 也按平台校验
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            check Library/Preferences/clangd/config.yaml
+          else
+            check .config/clangd/config.yaml
+          fi
           check .condarc
 
           # Env
@@ -103,11 +108,20 @@ jobs:
           set -e
           for f in .zshrc .zsh_plugins.txt .tmux.conf .vimrc .gitconfig \
                    .gdbinit .clang-format .condarc .env .env.local \
-                   .config/nvim .config/alacritty .config/fish \
-                   .config/clangd/config.yaml; do
+                   .config/nvim .config/alacritty .config/fish; do
             if [ -L "$HOME/$f" ]; then
               echo "❌ $f still linked after uninstall"
               exit 1
             fi
           done
+          # clangd 路径平台不同
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            clangd_path="Library/Preferences/clangd/config.yaml"
+          else
+            clangd_path=".config/clangd/config.yaml"
+          fi
+          if [ -L "$HOME/$clangd_path" ]; then
+            echo "❌ $clangd_path still linked after uninstall"
+            exit 1
+          fi
           echo "✓ Uninstall verified"
