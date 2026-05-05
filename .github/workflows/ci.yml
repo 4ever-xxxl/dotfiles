@@ -7,7 +7,29 @@ on:
     branches: [ main, master ]
 
 jobs:
+  # 快速静态检查：语法、shellcheck、dry-run
+  # 失败立即退出，避免在 matrix 上浪费时间
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bash syntax check
+        run: bash -n install.sh
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Run shellcheck
+        run: shellcheck --severity=error install.sh
+
+      - name: Dry-run install (no writes)
+        run: ./install.sh --dry-run
+
   test-installation:
+    needs: lint
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -28,22 +50,64 @@ jobs:
           brew install zsh tmux curl git
 
       - name: Run Install Script
-        run: |
-          ./install.sh install
+        run: ./install.sh install
 
       - name: Verify Symlinks
         run: |
-          # Verify key files
-          [ -L "$HOME/.zshrc" ] || (echo ".zshrc not linked" && exit 1)
-          [ -L "$HOME/.gitconfig" ] || (echo ".gitconfig not linked" && exit 1)
-          echo "Symlinks verified successfully!"
+          set -e
+          missing=0
+          check() {
+            if [ ! -L "$HOME/$1" ]; then
+              echo "❌ $1 not linked"
+              missing=$((missing + 1))
+            fi
+          }
+
+          # Shell
+          check .zshrc
+          check .zsh_plugins.txt
+          check .config/fish
+
+          # Terminal
+          check .tmux.conf
+          check .config/alacritty
+
+          # Editor
+          check .vimrc
+          check .config/nvim
+
+          # Dev tools
+          check .gitconfig
+          check .gitconfig-personal
+          check .gitconfig-work
+          check .gdbinit
+          check .clang-format
+          check .config/clangd/config.yaml
+          check .condarc
+
+          # Env
+          check .env
+          check .env.local
+
+          if [ "$missing" -gt 0 ]; then
+            echo "$missing symlink(s) missing"
+            exit 1
+          fi
+          echo "✓ All symlinks verified"
 
       - name: Run Uninstall
-        run: |
-          ./install.sh uninstall
+        run: ./install.sh uninstall
 
       - name: Verify Uninstall
         run: |
-          [ ! -L "$HOME/.zshrc" ] || (echo ".zshrc still linked" && exit 1)
-          [ ! -L "$HOME/.gitconfig" ] || (echo ".gitconfig still linked" && exit 1)
-          echo "Uninstall verified successfully!"
+          set -e
+          for f in .zshrc .zsh_plugins.txt .tmux.conf .vimrc .gitconfig \
+                   .gdbinit .clang-format .condarc .env .env.local \
+                   .config/nvim .config/alacritty .config/fish \
+                   .config/clangd/config.yaml; do
+            if [ -L "$HOME/$f" ]; then
+              echo "❌ $f still linked after uninstall"
+              exit 1
+            fi
+          done
+          echo "✓ Uninstall verified"
