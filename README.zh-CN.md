@@ -24,7 +24,7 @@
 
 本仓库采用 **包驱动结构 (Package-based)** 来管理不同工具的配置：
 
-- **Shell**: Zsh (Powerlevel10k) 和 Fish (Fisher)。
+- **Shell**: Zsh (antidote + Starship) 和 Fish (Fisher)。
 - **编辑器**: Neovim (基于 AstroNvim) 和 轻量级 Vim。
 - **终端**: Alacritty（预装 Catppuccin 主题）。
 - **工具**: Tmux (TPM), Git, GDB (Dashboard) 等。
@@ -54,7 +54,7 @@ chmod +x install.sh
 
 | 配置包 | 说明 | 核心特性 |
 | :--- | :--- | :--- |
-| **`shell/`** | Zsh & Fish 配置 | P10k 主题、语法高亮、自动建议 |
+| **`shell/`** | Zsh & Fish 配置 | Starship 提示符、语法高亮、自动建议 |
 | **`nvim/`** | Neovim (AstroNvim) | 类 IDE 体验、LSP、Treesitter、调试支持 |
 | **`tmux/`** | 终端复用器 | Vim 风格键位、自定义状态栏、插件管理 (TPM) |
 | **`alacritty/`** | 终端模拟器 | GPU 加速、包含 Catppuccin 和 Dawnfox 主题 |
@@ -85,8 +85,7 @@ ln -sf ~/dotfiles/nvim/.config/nvim ~/.config/nvim
 
 - `zsh`, `tmux`, `git`, `curl` (核心依赖)
 - `neovim` 0.9+ (推荐版本)
-- `stow` (可选，方便脚本调用)
-- [Nerd Fonts](https://www.nerdfonts.com/) (显示图标和 P10k 提示符必需)
+- [Nerd Fonts](https://www.nerdfonts.com/) (显示图标和 Starship 提示符必需)
 
 ## 📄 许可证
 

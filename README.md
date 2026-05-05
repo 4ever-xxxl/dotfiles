@@ -24,7 +24,7 @@ A professional, modular, and aesthetic configuration for a modern development en
 
 This repository uses a **package-based structure** to manage configurations for different tools.
 
-- **Shell**: Zsh (Powerlevel10k) & Fish (Fisher).
+- **Shell**: Zsh (antidote + Starship) & Fish (Fisher).
 - **Editor**: Neovim (AstroNvim-based) & Minimal Vim.
 - **Terminal**: Alacritty with Catppuccin themes.
 - **Tools**: Tmux (TPM), Git, GDB (Dashboard), and more.
@@ -54,7 +54,7 @@ To remove symlinks:
 
 | Package | Description | Key Features |
 | :--- | :--- | :--- |
-| **`shell/`** | Zsh & Fish config | P10k theme, syntax highlighting, autosuggestions |
+| **`shell/`** | Zsh & Fish config | Starship prompt, syntax highlighting, autosuggestions |
 | **`nvim/`** | Neovim (AstroNvim) | IDE-like experience, LSP, Treesitter, DAP |
 | **`tmux/`** | Terminal Multiplexer | Vim-style keys, status bar, plugin manager (TPM) |
 | **`alacritty/`** | Terminal Emulator | GPU accelerated, Catppuccin & Dawnfox themes |
@@ -85,8 +85,7 @@ ln -sf ~/dotfiles/nvim/.config/nvim ~/.config/nvim
 
 - `zsh`, `tmux`, `git`, `curl` (Core)
 - `neovim` 0.9+ (Recommended)
-- `stow` (Optional, script-friendly)
-- [Nerd Fonts](https://www.nerdfonts.com/) (Required for icons/P10k)
+- [Nerd Fonts](https://www.nerdfonts.com/) (Required for icons/Starship)
 
 ## 📄 License
 

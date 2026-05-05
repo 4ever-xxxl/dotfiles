@@ -7,8 +7,8 @@ A personalized development environment configuration (dotfiles) designed for rap
 
 ## 🛠 Engineering Standards
 
-### 1. Configuration Management (GNU Stow)
-- **Symlink Strategy**: Uses **GNU Stow** for symlink management. 
+### 1. Configuration Management
+- **Symlink Strategy**: Manual symlinks created by `install.sh` (plain `ln -s`, not GNU Stow).
 - **Package Structure**: Configurations are organized into "packages" (subdirectories) under the root of the repository.
   - `nvim/`: Neovim configuration.
   - `shell/`: Zsh and Fish configurations.
@@ -22,7 +22,7 @@ A personalized development environment configuration (dotfiles) designed for rap
 
 ### 2. Shell Environment
 - **Multi-Shell Support**: The repository maintains both Zsh (primary interactive/legacy) and Fish (modern interactive).
-- **Zsh**: Uses Oh-My-Zsh and Powerlevel10k. Customizations should go into `.zshrc` or specific plugin files.
+- **Zsh**: Uses **antidote** plugin manager and **Starship** prompt. Customizations should go into `.zshrc` or `.zsh_plugins.txt`.
 - **Fish**: Managed via `fisher`. Custom functions reside in `.config/fish/functions/`.
 
 ### 3. Editor Configuration
