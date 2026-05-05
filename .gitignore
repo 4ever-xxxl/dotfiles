@@ -1,15 +1,27 @@
-# 忽略系统文件
+# 系统文件
 .DS_Store
 Thumbs.db
+._*
 
-# 忽略编辑器临时文件
+# 编辑器临时文件
 *.swp
 *.swo
 *~
+*.bak
 
-# 忽略敏感信息（如有）
+# 敏感信息
 .env.local
 .env.secret
 
-# Neovim 相关
+# Neovim
 nvim/.config/nvim/lazy-lock.json
+
+# Zsh 编译/补全缓存
+*.zwc
+.zcompdump*
+shell/.zcompdump*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
