@@ -12,7 +12,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Bash syntax check
         run: bash -n install.sh
@@ -36,7 +36,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup environment (Ubuntu)
         if: runner.os == 'Linux'
@@ -47,7 +47,7 @@ jobs:
       - name: Setup environment (macOS)
         if: runner.os == 'macOS'
         run: |
-          brew install zsh tmux curl git
+          brew install zsh tmux
 
       - name: Run Install Script
         run: ./install.sh install
