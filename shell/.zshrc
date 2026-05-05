@@ -20,10 +20,20 @@ export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
 if [[ ! -d "$ZSH_CACHE_DIR/completions" ]]; then
     mkdir -p "$ZSH_CACHE_DIR/completions"
 fi
+fpath=("$ZSH_CACHE_DIR/completions" $fpath)
 
 if [[ -f "${ZDOTDIR:-$HOME}/.antidote/antidote.zsh" ]]; then
     source "${ZDOTDIR:-$HOME}/.antidote/antidote.zsh"
     antidote load "${ZDOTDIR:-$HOME}/.zsh_plugins.txt"
+fi
+
+if command -v zellij &>/dev/null; then
+    _zellij_completion="$ZSH_CACHE_DIR/completions/_zellij"
+    _zellij_bin="$(command -v zellij)"
+    if [[ ! -s "$_zellij_completion" || "$_zellij_completion" -ot "$_zellij_bin" ]]; then
+        zellij setup --generate-completion zsh >| "$_zellij_completion" 2>/dev/null || rm -f "$_zellij_completion"
+    fi
+    unset _zellij_completion _zellij_bin
 fi
 
 # =============================================================================
@@ -81,25 +91,6 @@ fi
 export EDITOR=nvim
 export VISUAL=nvim
 export GROFF_NO_SGR=1
-
-# =============================================================================
-# Conda/Mamba Configuration
-# Machine-specific — see misc/.env.local.example to configure for your machine
-# !! Contents within this block are managed by 'conda init' !!
-# =============================================================================
-# >>> conda initialize >>>
-__conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/opt/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
 
 # =============================================================================
 # Starship Prompt
