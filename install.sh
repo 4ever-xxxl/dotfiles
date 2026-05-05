@@ -394,6 +394,8 @@ install_dotfiles() {
             info "[DRY-RUN] 将从模板创建 misc/.env.local"
         else
             cp "$DOTFILES_DIR/misc/.env.local.example" "$DOTFILES_DIR/misc/.env.local"
+            # 环境变量文件不应可执行；显式归一为 644 防止权限漂移
+            chmod 644 "$DOTFILES_DIR/misc/.env.local"
             warning "已从模板创建 misc/.env.local，请按需编辑代理、conda 路径等本机配置"
         fi
     fi
