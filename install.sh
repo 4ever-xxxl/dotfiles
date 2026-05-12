@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #═══════════════════════════════════════════════════════════════════════════════
-#  Dotfiles 自动安装脚本
+#  Dotfiles 自动安装脚本（模块化）
 #═══════════════════════════════════════════════════════════════════════════════
 
 # 严格模式：
@@ -28,21 +28,10 @@ DRY_RUN=false
 # 工具函数
 #───────────────────────────────────────────────────────────────────────────────
 
-info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
-
-success() {
-    echo -e "${GREEN}[✓]${NC} $1"
-}
-
-warning() {
-    echo -e "${YELLOW}[!]${NC} $1"
-}
-
-error() {
-    echo -e "${RED}[✗]${NC} $1"
-}
+info()    { echo -e "${BLUE}[INFO]${NC} $1"; }
+success() { echo -e "${GREEN}[✓]${NC} $1"; }
+warning() { echo -e "${YELLOW}[!]${NC} $1"; }
+error()   { echo -e "${RED}[✗]${NC} $1"; }
 
 # 错误诊断 trap：捕获任何被 set -e 终止的失败，定位行号与命令
 trap 'error "失败于第 $LINENO 行: \`$BASH_COMMAND\` (退出码 $?)"' ERR
@@ -70,10 +59,6 @@ detect_os() {
     echo "$OS"
 }
 
-#───────────────────────────────────────────────────────────────────────────────
-# 跨平台路径
-#───────────────────────────────────────────────────────────────────────────────
-
 # clangd 配置路径因平台而异：
 #   Linux/BSD  → $XDG_CONFIG_HOME 或 ~/.config/clangd/config.yaml
 #   macOS      → ~/Library/Preferences/clangd/config.yaml
@@ -87,7 +72,7 @@ clangd_config_path() {
 }
 
 #───────────────────────────────────────────────────────────────────────────────
-# 包管理器安装函数
+# 包管理器安装
 #───────────────────────────────────────────────────────────────────────────────
 
 install_package() {
@@ -96,8 +81,9 @@ install_package() {
         info "[DRY-RUN] 将安装: $package"
         return
     fi
-    local os=$(detect_os)
-    
+    local os
+    os=$(detect_os)
+
     case $os in
         arch)
             if ! pacman -Qi "$package" &>/dev/null; then
@@ -127,59 +113,6 @@ install_package() {
             warning "未知系统，请手动安装 $package"
             ;;
     esac
-}
-
-#───────────────────────────────────────────────────────────────────────────────
-# 备份现有配置
-#───────────────────────────────────────────────────────────────────────────────
-
-backup_existing() {
-    if $DRY_RUN; then
-        info "[DRY-RUN] 跳过备份"
-        return
-    fi
-    local backup_dir="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
-    local files_to_backup=(
-        ".zshrc"
-        ".zsh_plugins.txt"
-        ".tmux.conf"
-        ".vimrc"
-        ".gitconfig"
-        ".gitconfig-personal"
-        ".gitconfig-work"
-        ".gdbinit"
-        ".clang-format"
-        ".condarc"
-        ".env"
-        ".env.local"
-        ".config/nvim"
-        ".config/alacritty"
-        ".config/fish"
-    )
-    
-    local need_backup=false
-    for file in "${files_to_backup[@]}"; do
-        local target="$HOME/$file"
-        if [[ -e "$target" && ! -L "$target" ]]; then
-            need_backup=true
-            break
-        fi
-    done
-    
-    if $need_backup; then
-        info "备份现有配置到 $backup_dir"
-        mkdir -p "$backup_dir"
-        
-        for file in "${files_to_backup[@]}"; do
-            local target="$HOME/$file"
-            if [[ -e "$target" && ! -L "$target" ]]; then
-                local dir=$(dirname "$backup_dir/$file")
-                mkdir -p "$dir"
-                cp -r "$target" "$backup_dir/$file"
-                success "备份: $file"
-            fi
-        done
-    fi
 }
 
 #───────────────────────────────────────────────────────────────────────────────
@@ -232,26 +165,26 @@ create_symlink() {
     if [[ -e "$dest" && ! -L "$dest" ]]; then
         safe_remove "$dest"
     fi
-    
+
     # 如果已经是正确的符号链接，跳过
     if [[ -L "$dest" && "$(readlink "$dest")" == "$src" ]]; then
         success "已链接: $dest"
         return
     fi
-    
+
     # 移除旧的符号链接
     [[ -L "$dest" ]] && rm "$dest"
-    
+
     # 确保目标目录存在
     mkdir -p "$(dirname "$dest")"
-    
+
     # 创建符号链接
     ln -s "$src" "$dest"
     success "链接: $dest -> $src"
 }
 
 #───────────────────────────────────────────────────────────────────────────────
-# 安装 antidote (Zsh 插件管理器)
+# 前置依赖安装器
 #───────────────────────────────────────────────────────────────────────────────
 
 install_antidote() {
@@ -268,10 +201,6 @@ install_antidote() {
     fi
 }
 
-#───────────────────────────────────────────────────────────────────────────────
-# 安装 Starship 提示符
-#───────────────────────────────────────────────────────────────────────────────
-
 install_starship() {
     if $DRY_RUN; then
         info "[DRY-RUN] 跳过 Starship 安装"
@@ -287,10 +216,6 @@ install_starship() {
     fi
 }
 
-#───────────────────────────────────────────────────────────────────────────────
-# 安装 TPM (Tmux Plugin Manager)
-#───────────────────────────────────────────────────────────────────────────────
-
 install_tpm() {
     if $DRY_RUN; then
         info "[DRY-RUN] 跳过 TPM 安装"
@@ -305,10 +230,6 @@ install_tpm() {
         success "TPM 已安装"
     fi
 }
-
-#───────────────────────────────────────────────────────────────────────────────
-# 检查现代命令行工具
-#───────────────────────────────────────────────────────────────────────────────
 
 check_modern_tools() {
     local missing=()
@@ -333,79 +254,46 @@ check_modern_tools() {
     fi
 }
 
+#═══════════════════════════════════════════════════════════════════════════════
+# 模块清单
 #───────────────────────────────────────────────────────────────────────────────
-# 主安装流程
-#───────────────────────────────────────────────────────────────────────────────
+# 这是本脚本的唯一信源：新增/移除模块时只改本节，install/uninstall/verify/
+# backup/CI 全部自动跟进。
+#
+# 每个模块定义两个函数（postinstall 可选）：
+#   module_<name>_links       → 每行一个 "src=>dst" 对（输出到 stdout）
+#   module_<name>_preinstall  → 该模块所需的二进制依赖、模板生成等
+#═══════════════════════════════════════════════════════════════════════════════
 
-install_dotfiles() {
-    echo ""
-    echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${PURPLE}║              🏠 Dotfiles 安装脚本                              ║${NC}"
-    echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
-    
-    local os=$(detect_os)
-    info "检测到系统: $os"
-    echo ""
-    
-    # 步骤 1: 备份现有配置
-    echo -e "${CYAN}━━━ 步骤 1/6: 备份现有配置 ━━━${NC}"
-    backup_existing
-    echo ""
+MODULE_NAMES=(shell tmux alacritty nvim vim git dev)
 
-    # 步骤 2: 安装基础依赖
-    echo -e "${CYAN}━━━ 步骤 2/6: 检查基础依赖 ━━━${NC}"
-    command -v git &>/dev/null || install_package git
-    command -v zsh &>/dev/null || install_package zsh
-    command -v tmux &>/dev/null || install_package tmux
-    command -v vim &>/dev/null || install_package vim
-    command -v curl &>/dev/null || install_package curl
-    success "基础依赖检查完成"
-    echo ""
+declare -A MODULE_DESC=(
+    [shell]="zsh + fish + starship + antidote + .env"
+    [tmux]="tmux.conf + TPM + 跨平台剪贴板脚本"
+    [alacritty]="Alacritty + Catppuccin/Dawnfox 主题"
+    [nvim]="Neovim (AstroNvim 基础)"
+    [vim]="轻量 .vimrc"
+    [git]=".gitconfig + personal + work"
+    [dev]="gdb + clang-format + clangd + condarc"
+)
 
-    # 步骤 3: 检查现代工具
-    echo -e "${CYAN}━━━ 步骤 3/6: 检查现代工具 ━━━${NC}"
-    check_modern_tools
-    echo ""
+# --- shell ---------------------------------------------------------------------
+module_shell_links() {
+    cat <<EOF
+$DOTFILES_DIR/shell/.zshrc=>$HOME/.zshrc
+$DOTFILES_DIR/shell/.zsh_plugins.txt=>$HOME/.zsh_plugins.txt
+$DOTFILES_DIR/shell/.config/fish=>$HOME/.config/fish
+$DOTFILES_DIR/misc/.env=>$HOME/.env
+EOF
+    # .env.local 仅当源文件已存在时才登记，避免 dangling 链接
+    [[ -f "$DOTFILES_DIR/misc/.env.local" ]] \
+        && echo "$DOTFILES_DIR/misc/.env.local=>$HOME/.env.local"
+}
 
-    # 步骤 4: 安装 Zsh 插件管理器和 Starship
-    echo -e "${CYAN}━━━ 步骤 4/6: 安装 antidote 和 Starship ━━━${NC}"
+module_shell_preinstall() {
     install_antidote
     install_starship
-    echo ""
-
-    # 步骤 5: 安装 TPM
-    echo -e "${CYAN}━━━ 步骤 5/6: 安装 Tmux 插件管理器 ━━━${NC}"
-    install_tpm
-    echo ""
-
-    # 步骤 6: 创建符号链接
-    echo -e "${CYAN}━━━ 步骤 6/6: 创建符号链接 ━━━${NC}"
-    # Shell 配置
-    create_symlink "$DOTFILES_DIR/shell/.zshrc" "$HOME/.zshrc"
-    create_symlink "$DOTFILES_DIR/shell/.zsh_plugins.txt" "$HOME/.zsh_plugins.txt"
-    create_symlink "$DOTFILES_DIR/shell/.config/fish" "$HOME/.config/fish"
-    
-    # 终端配置
-    create_symlink "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
-    create_symlink "$DOTFILES_DIR/tmux/.tmux/scripts" "$HOME/.tmux/scripts"
-    create_symlink "$DOTFILES_DIR/alacritty/.config/alacritty" "$HOME/.config/alacritty"
-    
-    # 编辑器配置
-    create_symlink "$DOTFILES_DIR/misc/.vimrc" "$HOME/.vimrc"
-    create_symlink "$DOTFILES_DIR/nvim/.config/nvim" "$HOME/.config/nvim"
-    
-    # 开发工具配置
-    create_symlink "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
-    create_symlink "$DOTFILES_DIR/git/.gitconfig-personal" "$HOME/.gitconfig-personal"
-    create_symlink "$DOTFILES_DIR/git/.gitconfig-work" "$HOME/.gitconfig-work"
-    create_symlink "$DOTFILES_DIR/misc/.gdbinit" "$HOME/.gdbinit"
-    create_symlink "$DOTFILES_DIR/misc/.clang-format" "$HOME/.clang-format"
-    create_symlink "$DOTFILES_DIR/misc/clangd_config.yaml" "$(clangd_config_path)"
-    create_symlink "$DOTFILES_DIR/misc/.condarc" "$HOME/.condarc"
-    
-    # 环境变量
-    create_symlink "$DOTFILES_DIR/misc/.env" "$HOME/.env"
+    # 模板拷贝 .env.local（仅当 .local 不存在且 .example 存在）
     if [[ ! -f "$DOTFILES_DIR/misc/.env.local" && -f "$DOTFILES_DIR/misc/.env.local.example" ]]; then
         if $DRY_RUN; then
             info "[DRY-RUN] 将从模板创建 misc/.env.local"
@@ -416,12 +304,244 @@ install_dotfiles() {
             warning "已从模板创建 misc/.env.local，请按需编辑代理、conda 路径等本机配置"
         fi
     fi
-    if [[ -f "$DOTFILES_DIR/misc/.env.local" ]]; then
-        create_symlink "$DOTFILES_DIR/misc/.env.local" "$HOME/.env.local"
-    fi
+}
+
+# --- tmux ----------------------------------------------------------------------
+module_tmux_links() {
+    cat <<EOF
+$DOTFILES_DIR/tmux/.tmux.conf=>$HOME/.tmux.conf
+$DOTFILES_DIR/tmux/.tmux/scripts=>$HOME/.tmux/scripts
+EOF
+}
+
+module_tmux_preinstall() {
+    install_tpm
+}
+
+# --- alacritty -----------------------------------------------------------------
+module_alacritty_links() {
+    echo "$DOTFILES_DIR/alacritty/.config/alacritty=>$HOME/.config/alacritty"
+}
+
+# --- nvim ----------------------------------------------------------------------
+module_nvim_links() {
+    echo "$DOTFILES_DIR/nvim/.config/nvim=>$HOME/.config/nvim"
+}
+
+# --- vim -----------------------------------------------------------------------
+module_vim_links() {
+    echo "$DOTFILES_DIR/misc/.vimrc=>$HOME/.vimrc"
+}
+
+# --- git -----------------------------------------------------------------------
+module_git_links() {
+    cat <<EOF
+$DOTFILES_DIR/git/.gitconfig=>$HOME/.gitconfig
+$DOTFILES_DIR/git/.gitconfig-personal=>$HOME/.gitconfig-personal
+$DOTFILES_DIR/git/.gitconfig-work=>$HOME/.gitconfig-work
+EOF
+}
+
+# --- dev -----------------------------------------------------------------------
+module_dev_links() {
+    cat <<EOF
+$DOTFILES_DIR/misc/.gdbinit=>$HOME/.gdbinit
+$DOTFILES_DIR/misc/.clang-format=>$HOME/.clang-format
+$DOTFILES_DIR/misc/clangd_config.yaml=>$(clangd_config_path)
+$DOTFILES_DIR/misc/.condarc=>$HOME/.condarc
+EOF
+}
+
+#───────────────────────────────────────────────────────────────────────────────
+# 模块 driver
+#───────────────────────────────────────────────────────────────────────────────
+
+is_valid_module() {
+    local needle=$1 m
+    for m in "${MODULE_NAMES[@]}"; do
+        [[ "$m" == "$needle" ]] && return 0
+    done
+    return 1
+}
+
+install_module() {
+    local name=$1
     echo ""
-    
-    # 完成
+    echo -e "${CYAN}━━━ 模块: $name (${MODULE_DESC[$name]:-}) ━━━${NC}"
+
+    if declare -F "module_${name}_preinstall" >/dev/null; then
+        "module_${name}_preinstall"
+    fi
+
+    local src dst line
+    while IFS= read -r line; do
+        [[ -z "$line" ]] && continue
+        src="${line%%=>*}"
+        dst="${line#*=>}"
+        create_symlink "$src" "$dst"
+    done < <("module_${name}_links")
+
+    if declare -F "module_${name}_postinstall" >/dev/null; then
+        "module_${name}_postinstall"
+    fi
+}
+
+uninstall_module() {
+    local name=$1
+    echo ""
+    echo -e "${CYAN}━━━ 卸载模块: $name ━━━${NC}"
+
+    local dst line
+    while IFS= read -r line; do
+        [[ -z "$line" ]] && continue
+        dst="${line#*=>}"
+        if [[ -L "$dst" ]]; then
+            if $DRY_RUN; then
+                info "[DRY-RUN] 将移除: $dst"
+            else
+                rm "$dst"
+                success "移除链接: $dst"
+            fi
+        fi
+    done < <("module_${name}_links")
+}
+
+verify_module() {
+    local name=$1
+    local errors=0
+    local src dst line actual
+
+    while IFS= read -r line; do
+        [[ -z "$line" ]] && continue
+        src="${line%%=>*}"
+        dst="${line#*=>}"
+        if [[ ! -L "$dst" ]]; then
+            error "[$name] 未链接: $dst"
+            errors=$((errors + 1))
+        else
+            actual=$(readlink "$dst")
+            if [[ "$actual" != "$src" ]]; then
+                error "[$name] 链接错位: $dst -> $actual (期望 $src)"
+                errors=$((errors + 1))
+            fi
+        fi
+    done < <("module_${name}_links")
+
+    if [[ "$errors" -eq 0 ]]; then
+        success "模块 $name: 链接正确"
+        return 0
+    fi
+    return 1
+}
+
+list_modules() {
+    echo ""
+    echo -e "${PURPLE}可用模块:${NC}"
+    echo ""
+    local m
+    for m in "${MODULE_NAMES[@]}"; do
+        printf "  ${GREEN}%-11s${NC} %s\n" "$m" "${MODULE_DESC[$m]:-}"
+    done
+    echo ""
+    echo "用法："
+    echo "  $0 install [模块...]    # 默认安装全部"
+    echo "  $0 install --all        # 显式装全部"
+    echo "  $0 verify  [模块...]    # 校验链接"
+    echo "  $0 uninstall [模块...]  # 移除链接"
+    echo ""
+}
+
+#───────────────────────────────────────────────────────────────────────────────
+# 备份现有配置（按选中的模块衍生路径集合）
+#───────────────────────────────────────────────────────────────────────────────
+
+backup_existing() {
+    if $DRY_RUN; then
+        info "[DRY-RUN] 跳过备份"
+        return
+    fi
+
+    local -a targets=()
+    local mod dst line
+    for mod in "$@"; do
+        while IFS= read -r line; do
+            [[ -z "$line" ]] && continue
+            dst="${line#*=>}"
+            targets+=("$dst")
+        done < <("module_${mod}_links")
+    done
+
+    local need_backup=false target
+    for target in "${targets[@]}"; do
+        if [[ -e "$target" && ! -L "$target" ]]; then
+            need_backup=true
+            break
+        fi
+    done
+
+    if ! $need_backup; then
+        return
+    fi
+
+    local backup_dir
+    backup_dir="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
+    info "备份现有配置到 $backup_dir"
+    mkdir -p "$backup_dir"
+
+    local rel dir
+    for target in "${targets[@]}"; do
+        if [[ -e "$target" && ! -L "$target" ]]; then
+            rel="${target#"$HOME"/}"
+            dir=$(dirname "$backup_dir/$rel")
+            mkdir -p "$dir"
+            cp -r "$target" "$backup_dir/$rel"
+            success "备份: $rel"
+        fi
+    done
+}
+
+#───────────────────────────────────────────────────────────────────────────────
+# 主流程
+#───────────────────────────────────────────────────────────────────────────────
+
+install_dotfiles() {
+    local -a modules=("$@")
+
+    echo ""
+    echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${PURPLE}║              🏠 Dotfiles 安装脚本                              ║${NC}"
+    echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+
+    local os
+    os=$(detect_os)
+    info "检测到系统: $os"
+    info "目标模块: ${modules[*]}"
+    echo ""
+
+    echo -e "${CYAN}━━━ 备份现有配置 ━━━${NC}"
+    backup_existing "${modules[@]}"
+    echo ""
+
+    echo -e "${CYAN}━━━ 检查基础依赖 ━━━${NC}"
+    command -v git &>/dev/null || install_package git
+    command -v zsh &>/dev/null || install_package zsh
+    command -v tmux &>/dev/null || install_package tmux
+    command -v vim &>/dev/null || install_package vim
+    command -v curl &>/dev/null || install_package curl
+    success "基础依赖检查完成"
+    echo ""
+
+    echo -e "${CYAN}━━━ 检查现代工具 ━━━${NC}"
+    check_modern_tools
+    echo ""
+
+    local m
+    for m in "${modules[@]}"; do
+        install_module "$m"
+    done
+    echo ""
+
     echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║              ✅ 安装完成！                                    ║${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════╝${NC}"
@@ -429,69 +549,85 @@ install_dotfiles() {
     echo -e "${YELLOW}后续步骤:${NC}"
     echo "  1. 重新启动终端或运行: source ~/.zshrc"
     echo "  2. 如需自定义 Starship 提示符，编辑 ~/.config/starship.toml"
-    echo "     或运行: starship preset <name> -- 查看预设方案"
     echo "  3. 进入 tmux 后按 Ctrl+a I 安装 tmux 插件"
-    echo "  4. 按需编辑 ~/dotfiles/misc/.env.local（代理、conda 路径等本机配置）"
+    echo "  4. 按需编辑 ~/dotfiles/misc/.env.local"
     echo ""
     echo -e "${BLUE}备份位置: ~/.dotfiles_backup/${NC}"
     echo ""
 }
 
-#───────────────────────────────────────────────────────────────────────────────
-# 卸载函数
-#───────────────────────────────────────────────────────────────────────────────
-
 uninstall_dotfiles() {
+    local -a modules=("$@")
+
     echo ""
     echo -e "${YELLOW}╔═══════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${YELLOW}║              🗑️  Dotfiles 卸载                                 ║${NC}"
     echo -e "${YELLOW}╚═══════════════════════════════════════════════════════════════╝${NC}"
     echo ""
-    
-    local files=(
-        "$HOME/.zshrc"
-        "$HOME/.zsh_plugins.txt"
-        "$HOME/.tmux.conf"
-        "$HOME/.tmux/scripts"
-        "$HOME/.vimrc"
-        "$HOME/.gitconfig"
-        "$HOME/.gdbinit"
-        "$HOME/.clang-format"
-        "$(clangd_config_path)"
-        "$HOME/.condarc"
-        "$HOME/.env"
-        "$HOME/.env.local"
-        "$HOME/.config/nvim"
-        "$HOME/.config/alacritty"
-        "$HOME/.config/fish"
-    )
-    
-    for file in "${files[@]}"; do
-        if [[ -L "$file" ]]; then
-            rm "$file"
-            success "移除链接: $file"
-        fi
+
+    info "目标模块: ${modules[*]}"
+
+    local m
+    for m in "${modules[@]}"; do
+        uninstall_module "$m"
     done
-    
+
     echo ""
     info "符号链接已移除"
     info "如需恢复原配置，请查看备份目录: ~/.dotfiles_backup/"
     echo ""
 }
 
+verify_all() {
+    local -a modules=("$@")
+    local rc=0 m
+    for m in "${modules[@]}"; do
+        verify_module "$m" || rc=1
+    done
+    return "$rc"
+}
+
+# 输出选中模块的所有 dst 路径，每行一个。供 CI 卸载后校验等场景使用。
+paths_for_modules() {
+    local m line
+    for m in "$@"; do
+        while IFS= read -r line; do
+            [[ -z "$line" ]] && continue
+            printf '%s\n' "${line#*=>}"
+        done < <("module_${m}_links")
+    done
+}
+
 #───────────────────────────────────────────────────────────────────────────────
-# 帮助信息
+# CLI 解析
 #───────────────────────────────────────────────────────────────────────────────
 
 show_help() {
-    echo "用法: $0 [选项]"
-    echo ""
-    echo "选项:"
-    echo "  install        安装 dotfiles（默认）"
-    echo "  --dry-run, -n  预览安装操作，不实际执行任何写入"
-    echo "  uninstall      卸载 dotfiles（移除符号链接）"
-    echo "  help           显示此帮助信息"
-    echo ""
+    cat <<EOF
+用法: $0 <命令> [选项...] [模块...]
+
+命令:
+  install [模块...]       安装指定模块；不带模块名 = 全部
+  uninstall [模块...]     卸载指定模块；不带模块名 = 全部
+  verify [模块...]        校验链接是否正确（CI 用）
+  paths [模块...]         输出选中模块的所有 dst 路径（脚本/CI 用）
+  list                    列出可用模块
+  help                    显示本帮助
+
+选项:
+  --all                   显式选中全部模块
+  --dry-run, -n           仅预览，不写入
+
+模块: ${MODULE_NAMES[*]}
+
+示例:
+  $0 install                       # 装全部（=当前默认行为）
+  $0 install --all                 # 装全部（显式）
+  $0 install nvim tmux             # 仅装 nvim + tmux
+  $0 install --dry-run shell git   # 预览
+  $0 verify                        # 校验全部
+  $0 uninstall dev                 # 仅卸载 dev 模块
+EOF
 }
 
 #───────────────────────────────────────────────────────────────────────────────
@@ -499,26 +635,75 @@ show_help() {
 #───────────────────────────────────────────────────────────────────────────────
 
 main() {
-    case "${1:-install}" in
-        install)
-            install_dotfiles
-            ;;
+    local cmd="${1:-install}"
+
+    # 兼容旧调用：./install.sh --dry-run 等价于 ./install.sh install --dry-run
+    case "$cmd" in
         --dry-run|-n)
             DRY_RUN=true
-            info "=== DRY-RUN 模式：仅预览操作，不写入任何文件 ==="
-            echo ""
-            install_dotfiles
+            cmd="install"
+            shift
             ;;
-        uninstall)
-            uninstall_dotfiles
-            ;;
-        help|--help|-h)
-            show_help
+        install|uninstall|verify|paths|list|help|--help|-h)
+            shift
             ;;
         *)
-            error "未知选项: $1"
+            error "未知命令: $cmd"
+            echo ""
             show_help
             exit 1
+            ;;
+    esac
+
+    # list / help 不需要模块解析
+    case "$cmd" in
+        list) list_modules; return 0 ;;
+        help|--help|-h) show_help; return 0 ;;
+    esac
+
+    # 解析剩余参数：分离标志 vs 模块名（在主 shell 内完成，避免 DRY_RUN 落进子壳丢失）
+    local all=false
+    local -a mod_args=()
+    local a
+    for a in "$@"; do
+        case "$a" in
+            --dry-run|-n) DRY_RUN=true ;;
+            --all) all=true ;;
+            *) mod_args+=("$a") ;;
+        esac
+    done
+
+    # 解析模块名
+    local -a selected=()
+    if [[ ${#mod_args[@]} -gt 0 ]] && ! $all; then
+        for a in "${mod_args[@]}"; do
+            if ! is_valid_module "$a"; then
+                error "未知模块: $a"
+                info "可用模块: ${MODULE_NAMES[*]}"
+                exit 1
+            fi
+            selected+=("$a")
+        done
+    else
+        selected=("${MODULE_NAMES[@]}")
+    fi
+
+    case "$cmd" in
+        install)
+            if $DRY_RUN; then
+                info "=== DRY-RUN 模式：仅预览操作，不写入任何文件 ==="
+                echo ""
+            fi
+            install_dotfiles "${selected[@]}"
+            ;;
+        uninstall)
+            uninstall_dotfiles "${selected[@]}"
+            ;;
+        verify)
+            verify_all "${selected[@]}"
+            ;;
+        paths)
+            paths_for_modules "${selected[@]}"
             ;;
     esac
 }

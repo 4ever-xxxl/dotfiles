@@ -53,53 +53,7 @@ jobs:
         run: ./install.sh install
 
       - name: Verify Symlinks
-        run: |
-          set -e
-          missing=0
-          check() {
-            if [ ! -L "$HOME/$1" ]; then
-              echo "❌ $1 not linked"
-              missing=$((missing + 1))
-            fi
-          }
-
-          # Shell
-          check .zshrc
-          check .zsh_plugins.txt
-          check .config/fish
-
-          # Terminal
-          check .tmux.conf
-          check .tmux/scripts
-          check .config/alacritty
-
-          # Editor
-          check .vimrc
-          check .config/nvim
-
-          # Dev tools
-          check .gitconfig
-          check .gitconfig-personal
-          check .gitconfig-work
-          check .gdbinit
-          check .clang-format
-          # clangd 配置路径平台不同，CI 也按平台校验
-          if [ "$RUNNER_OS" = "macOS" ]; then
-            check Library/Preferences/clangd/config.yaml
-          else
-            check .config/clangd/config.yaml
-          fi
-          check .condarc
-
-          # Env
-          check .env
-          check .env.local
-
-          if [ "$missing" -gt 0 ]; then
-            echo "$missing symlink(s) missing"
-            exit 1
-          fi
-          echo "✓ All symlinks verified"
+        run: ./install.sh verify
 
       - name: Run Uninstall
         run: ./install.sh uninstall
@@ -107,22 +61,14 @@ jobs:
       - name: Verify Uninstall
         run: |
           set -e
-          for f in .zshrc .zsh_plugins.txt .tmux.conf .tmux/scripts .vimrc .gitconfig \
-                   .gdbinit .clang-format .condarc .env .env.local \
-                   .config/nvim .config/alacritty .config/fish; do
-            if [ -L "$HOME/$f" ]; then
-              echo "❌ $f still linked after uninstall"
-              exit 1
+          rc=0
+          while IFS= read -r p; do
+            if [ -L "$p" ]; then
+              echo "❌ still linked after uninstall: $p"
+              rc=1
             fi
-          done
-          # clangd 路径平台不同
-          if [ "$RUNNER_OS" = "macOS" ]; then
-            clangd_path="Library/Preferences/clangd/config.yaml"
-          else
-            clangd_path=".config/clangd/config.yaml"
+          done < <(./install.sh paths)
+          if [ "$rc" -eq 0 ]; then
+            echo "✓ Uninstall verified"
           fi
-          if [ -L "$HOME/$clangd_path" ]; then
-            echo "❌ $clangd_path still linked after uninstall"
-            exit 1
-          fi
-          echo "✓ Uninstall verified"
+          exit $rc

@@ -7,10 +7,11 @@ Thanks for your interest in improving these dotfiles. The repo is small, so the 
 ### Test changes without writing to disk
 
 ```bash
-./install.sh --dry-run
+./install.sh --dry-run               # full pipeline, all modules
+./install.sh install --dry-run nvim  # subset
 ```
 
-Walks the full install pipeline and prints every action that *would* happen, without creating symlinks, downloading plugins, or invoking package managers.
+Walks the install pipeline and prints every action that *would* happen, without creating symlinks, downloading plugins, or invoking package managers.
 
 ### Run the same checks CI runs
 
@@ -57,18 +58,17 @@ Each tool gets its own top-level directory mirroring its target layout:
 | Directory | Targets |
 |---|---|
 | `shell/` | `~/.zshrc`, `~/.zsh_plugins.txt`, `~/.config/fish` |
-| `tmux/` | `~/.tmux.conf` |
+| `tmux/` | `~/.tmux.conf`, `~/.tmux/scripts` |
 | `alacritty/` | `~/.config/alacritty` |
 | `nvim/` | `~/.config/nvim` |
 | `git/` | `~/.gitconfig`, `~/.gitconfig-personal`, `~/.gitconfig-work` |
 | `misc/` | `~/.vimrc`, `~/.gdbinit`, `~/.clang-format`, `~/.condarc`, `~/.env`, etc. |
 
-When you add a new config:
+`install.sh` groups these directories into 7 user-facing **modules** (`shell`, `tmux`, `alacritty`, `nvim`, `vim`, `git`, `dev`); see `./install.sh list`.
 
-1. Add the source file under the appropriate package directory.
-2. Add a `create_symlink` call in `install.sh::install_dotfiles`.
-3. Add the target path to the `uninstall_dotfiles` files array.
-4. Add a matching `check` line to `.github/workflows/ci.yml`.
+When you add a new config, edit only the relevant `module_<name>_links` function in `install.sh` (search for the `# --- <name> ---` comment in the manifest section). The CI's symlink check, the uninstaller, the backup logic, and the `paths` / `verify` subcommands all derive from that function — no other edits needed.
+
+If you're introducing a new module entirely, add its name to `MODULE_NAMES`, an entry to `MODULE_DESC`, and the `module_<name>_links` (plus optional `module_<name>_preinstall`) functions.
 
 ### Cross-platform paths
 

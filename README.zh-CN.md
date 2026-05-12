@@ -42,13 +42,19 @@ cd ~/dotfiles
 
 ```bash
 chmod +x install.sh
-./install.sh install
+./install.sh install              # 安装全部（默认）
+./install.sh install nvim tmux    # 仅安装选定模块
+./install.sh list                 # 查看可用模块
+./install.sh install --dry-run    # 预览，不实际写入
 ```
 
 如需移除软链接：
 ```bash
-./install.sh uninstall
+./install.sh uninstall            # 移除全部
+./install.sh uninstall dev        # 仅移除某个模块
 ```
+
+可用模块：`shell tmux alacritty nvim vim git dev`。完整说明运行 `./install.sh help`。
 
 ## 🛠 配置包介绍
 

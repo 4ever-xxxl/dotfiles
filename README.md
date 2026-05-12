@@ -42,13 +42,19 @@ The included `install.sh` handles backups, dependencies, and symlinking.
 
 ```bash
 chmod +x install.sh
-./install.sh install
+./install.sh install              # install everything (default)
+./install.sh install nvim tmux    # install only selected modules
+./install.sh list                 # see available modules
+./install.sh install --dry-run    # preview without writing
 ```
 
 To remove symlinks:
 ```bash
-./install.sh uninstall
+./install.sh uninstall            # remove all
+./install.sh uninstall dev        # remove only one module
 ```
+
+Available modules: `shell tmux alacritty nvim vim git dev`. Run `./install.sh help` for the full reference.
 
 ## 🛠 Packages
 
