@@ -76,5 +76,16 @@ nnoremap <leader>/ :nohlsearch<CR>
 " 使用内置文件浏览器 netrw
 " 打开当前文件所在目录的文件浏览器
 nnoremap <leader>e :Explore<CR>
-" yank打通到windows
-vmap <leader>y :w !clip.exe<CR><CR>
+" yank 到系统剪贴板 (跨平台)
+" 优先级：WSL(win32yank) → macOS(pbcopy) → X11(xclip) → Wayland(wl-copy) → xsel
+if executable('win32yank.exe')
+    vnoremap <leader>y :w !win32yank.exe -i --crlf<CR><CR>
+elseif executable('pbcopy')
+    vnoremap <leader>y :w !pbcopy<CR><CR>
+elseif executable('xclip')
+    vnoremap <leader>y :w !xclip -in -selection clipboard<CR><CR>
+elseif executable('wl-copy')
+    vnoremap <leader>y :w !wl-copy<CR><CR>
+elseif executable('xsel')
+    vnoremap <leader>y :w !xsel --clipboard --input<CR><CR>
+endif

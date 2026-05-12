@@ -70,6 +70,7 @@ jobs:
 
           # Terminal
           check .tmux.conf
+          check .tmux/scripts
           check .config/alacritty
 
           # Editor
@@ -106,7 +107,7 @@ jobs:
       - name: Verify Uninstall
         run: |
           set -e
-          for f in .zshrc .zsh_plugins.txt .tmux.conf .vimrc .gitconfig \
+          for f in .zshrc .zsh_plugins.txt .tmux.conf .tmux/scripts .vimrc .gitconfig \
                    .gdbinit .clang-format .condarc .env .env.local \
                    .config/nvim .config/alacritty .config/fish; do
             if [ -L "$HOME/$f" ]; then

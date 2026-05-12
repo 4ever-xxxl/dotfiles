@@ -8,10 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Cross-platform clipboard.** New `tmux/.tmux/scripts/detect-clipboard.sh` probes `win32yank.exe → pbcopy → wl-copy → xclip → xsel` and tmux loads the result into `@copy_command` at config-load time (via `run-shell`, since `#(...)` is not re-evaluated after `#{...}` substitution). OSC52 fallback (`set -s set-clipboard on`) covers SSH sessions. `misc/.vimrc`'s `<leader>y` now probes the same chain instead of hardcoding `clip.exe`. `install.sh` and CI now manage the `~/.tmux/scripts` symlink alongside `.tmux.conf`.
 - `CONTRIBUTING.md` and `CHANGELOG.md`.
 - `LICENSE` file (MIT).
 - CI lint job covering `bash -n`, `shellcheck`, and `./install.sh --dry-run`. Lint runs before the OS matrix so syntax errors fail fast.
-- CI now verifies all 16 symlinks created by `install.sh` (previously 2: `.zshrc` and `.gitconfig`).
+- CI now verifies all 17 symlinks created by `install.sh` (previously 2: `.zshrc` and `.gitconfig`).
 - Cross-platform clangd config path: macOS now links to `~/Library/Preferences/clangd/config.yaml`; Linux still uses `~/.config/clangd/config.yaml`.
 - `safe_remove()` helper in `install.sh` with three guards: target must be non-empty, must not be `/`, and must be inside `$HOME`.
 - `ERR` trap in `install.sh` reporting line / failed command / exit code on failure.

@@ -388,6 +388,7 @@ install_dotfiles() {
     
     # 终端配置
     create_symlink "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
+    create_symlink "$DOTFILES_DIR/tmux/.tmux/scripts" "$HOME/.tmux/scripts"
     create_symlink "$DOTFILES_DIR/alacritty/.config/alacritty" "$HOME/.config/alacritty"
     
     # 编辑器配置
@@ -451,6 +452,7 @@ uninstall_dotfiles() {
         "$HOME/.zshrc"
         "$HOME/.zsh_plugins.txt"
         "$HOME/.tmux.conf"
+        "$HOME/.tmux/scripts"
         "$HOME/.vimrc"
         "$HOME/.gitconfig"
         "$HOME/.gdbinit"
