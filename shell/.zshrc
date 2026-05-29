@@ -98,3 +98,7 @@ export GROFF_NO_SGR=1
 if command -v starship &>/dev/null; then
     eval "$(starship init zsh)"
 fi
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/lx10ng/.local/bin:$PATH"

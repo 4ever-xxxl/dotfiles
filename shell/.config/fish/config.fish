@@ -34,3 +34,7 @@ if status is-interactive
         echo "Proxy has been unset."
     end
 end
+
+
+# Added by Antigravity CLI installer
+set -gx PATH "/home/lx10ng/.local/bin" $PATH
