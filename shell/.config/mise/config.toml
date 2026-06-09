@@ -61,6 +61,7 @@ bun = "latest"
 claude = "latest"
 opencode = "latest"
 codex = "latest"
+lazydocker = "latest"
 
 
 
