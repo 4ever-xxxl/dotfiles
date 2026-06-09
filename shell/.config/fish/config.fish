@@ -3,10 +3,6 @@ if test -f ~/.env
 end
 
 if status is-interactive
-    if type -q fnm
-        fnm env --use-on-cd --shell fish | source
-    end
-
     if type -q mise
         mise activate fish | source
     end
