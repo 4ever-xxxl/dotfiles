@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **mise integration**: Added `mise` configuration (`shell/.config/mise/config.toml`) to manage development tools and language runtimes (Node.js, Java, Go, Python, Bun, Neovim, Starship, and modern CLI tools like `ripgrep`, `fd`, `fzf`, `lazygit`, etc.) with optimized environment and recommended settings.
 - **Modular install.** `./install.sh install nvim tmux` (or any subset of `shell tmux alacritty nvim vim git dev`) — single-module installs instead of all-or-nothing. New subcommands: `list`, `verify`, `paths`. `install`/`uninstall` with no module names preserves the previous "everything" behavior for backward compatibility. `--all` is the explicit synonym.
 - **Cross-platform clipboard.** New `tmux/.tmux/scripts/detect-clipboard.sh` probes `win32yank.exe → pbcopy → wl-copy → xclip → xsel` and tmux loads the result into `@copy_command` at config-load time (via `run-shell`, since `#(...)` is not re-evaluated after `#{...}` substitution). OSC52 fallback (`set -s set-clipboard on`) covers SSH sessions. `misc/.vimrc`'s `<leader>y` now probes the same chain instead of hardcoding `clip.exe`.
 - `CONTRIBUTING.md` and `CHANGELOG.md`.
@@ -20,6 +21,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- **Tooling Migration to mise**: Migrated runtime managers (`fnm`, `sdkman`, `bun`) and standalone installations (like Starship and AI CLIs) to `mise`.
+- **Cleaned Env & Install Scripts**: Removed redundant tool installer code from `install.sh` and obsolete `PATH` extensions/completion scripts from `misc/.env`.
 - `install.sh` rewritten around a module manifest (`module_<name>_links` / `module_<name>_preinstall`). The manifest is the single source of truth — CI's `Verify Symlinks` step shrank from ~48 lines of hardcoded `check` calls to `./install.sh verify`, and `Verify Uninstall` derives paths from `./install.sh paths` instead of duplicating the list.
 - `install.sh` now runs under `set -euo pipefail` instead of `set -e`.
 - Tmux theme switched from Dracula to Catppuccin (mocha) to match Alacritty; the conflicting manual color block (which was being overridden by the plugin at TPM init) was removed.

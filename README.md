@@ -60,7 +60,7 @@ Available modules: `shell tmux alacritty nvim vim git dev`. Run `./install.sh he
 
 | Package | Description | Key Features |
 | :--- | :--- | :--- |
-| **`shell/`** | Zsh & Fish config | Starship prompt, syntax highlighting, autosuggestions |
+| **`shell/`** | Zsh & Fish config | Starship prompt, mise runtime/tool manager, syntax highlighting, autosuggestions |
 | **`nvim/`** | Neovim (AstroNvim) | IDE-like experience, LSP, Treesitter, DAP |
 | **`tmux/`** | Terminal Multiplexer | Vim-style keys, status bar, plugin manager (TPM) |
 | **`alacritty/`** | Terminal Emulator | GPU accelerated, Catppuccin & Dawnfox themes |
@@ -90,7 +90,8 @@ ln -sf ~/dotfiles/nvim/.config/nvim ~/.config/nvim
 ## 🔧 Dependencies
 
 - `zsh`, `tmux`, `git`, `curl` (Core)
-- `neovim` 0.9+ (Recommended)
+- [mise](https://mise.jdx.dev/) (Recommended, manages all runtimes and CLI tools)
+- `neovim` 0.9+ (Recommended, can be installed via `mise`)
 - [Nerd Fonts](https://www.nerdfonts.com/) (Required for icons/Starship)
 
 ## 📄 License

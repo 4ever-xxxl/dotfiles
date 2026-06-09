@@ -60,7 +60,7 @@ chmod +x install.sh
 
 | 配置包 | 说明 | 核心特性 |
 | :--- | :--- | :--- |
-| **`shell/`** | Zsh & Fish 配置 | Starship 提示符、语法高亮、自动建议 |
+| **`shell/`** | Zsh & Fish 配置 | Starship 提示符、mise 运行时与工具管理、语法高亮、自动建议 |
 | **`nvim/`** | Neovim (AstroNvim) | 类 IDE 体验、LSP、Treesitter、调试支持 |
 | **`tmux/`** | 终端复用器 | Vim 风格键位、自定义状态栏、插件管理 (TPM) |
 | **`alacritty/`** | 终端模拟器 | GPU 加速、包含 Catppuccin 和 Dawnfox 主题 |
@@ -90,7 +90,8 @@ ln -sf ~/dotfiles/nvim/.config/nvim ~/.config/nvim
 ## 🔧 依赖项
 
 - `zsh`, `tmux`, `git`, `curl` (核心依赖)
-- `neovim` 0.9+ (推荐版本)
+- [mise](https://mise.jdx.dev/) (推荐，用于管理所有运行时与 CLI 工具)
+- `neovim` 0.9+ (推荐版本，可通过 `mise` 管理)
 - [Nerd Fonts](https://www.nerdfonts.com/) (显示图标和 Starship 提示符必需)
 
 ## 📄 许可证
