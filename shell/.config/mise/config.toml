@@ -1,0 +1,38 @@
+[settings]
+# =============================================================================
+# 1. Core Settings
+# =============================================================================
+experimental = true                  # 启用实验性功能（包括更好的任务执行和环境变量管理）
+jobs = 8                             # 允许并行运行 8 个安装/编译任务，极大提升工具安装速度
+legacy_version_file = true           # 兼容读取其他工具的配置文件（如 .nvmrc, .node-version, .python-version）
+auto_install = true                  # 在切换目录检测到缺失对应工具版本时，提示并自动安装
+exec_auto_install = true             # 运行 `mise exec` 缺失工具时自动安装
+
+# =============================================================================
+# 2. UI & Feedback
+# =============================================================================
+status.show_tools = true             # 进入项目目录时，优雅地输出当前激活的语言版本
+status.show_env = false              # 是否在进入目录时输出被注入的环境变量（设为 false 保持终端清爽）
+status.missing_tools = "if_other_versions_installed" # 仅在已安装了其他版本但缺失当前版本时提醒
+
+# =============================================================================
+# 3. Global Tools
+# =============================================================================
+[tools]
+# 您可以取消注释以下行来启用全局默认版本（推荐 lts / latest）
+# node = "lts"
+# python = "3.11"
+# usage = "latest"                     # 提供优秀的 CLI 参数补全与用法定义
+
+# =============================================================================
+# 4. Language Customizations
+# =============================================================================
+[settings.node]
+corepack = true                      # 自动启用 Node.js 的 corepack，自动管理 pnpm/yarn 版本
+
+[settings.go]
+set_goroot = true                    # 自动配置并注入 GOROOT，避免 IDE 找不到 Go SDK
+download_mirror = "https://mirrors.ustc.edu.cn/golang" # 国内 Golang 下载镜像加速
+
+[settings.python]
+uv_venv_auto = true                  # 自动探测并激活项目根目录下的 uv 虚拟环境

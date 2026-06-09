@@ -7,6 +7,10 @@ if status is-interactive
         fnm env --use-on-cd --shell fish | source
     end
 
+    if type -q mise
+        mise activate fish | source
+    end
+
     function set_proxy --description "Enable local proxy from PROXY_HOST/PROXY_PORT"
         if not set -q PROXY_HOST; or not set -q PROXY_PORT
             echo "PROXY_HOST/PROXY_PORT is not set."

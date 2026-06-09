@@ -283,6 +283,7 @@ module_shell_links() {
 $DOTFILES_DIR/shell/.zshrc=>$HOME/.zshrc
 $DOTFILES_DIR/shell/.zsh_plugins.txt=>$HOME/.zsh_plugins.txt
 $DOTFILES_DIR/shell/.config/fish=>$HOME/.config/fish
+$DOTFILES_DIR/shell/.config/mise/config.toml=>$HOME/.config/mise/config.toml
 $DOTFILES_DIR/misc/.env=>$HOME/.env
 EOF
     # .env.local 仅当源文件已存在时才登记，避免 dangling 链接
