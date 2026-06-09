@@ -201,20 +201,6 @@ install_antidote() {
     fi
 }
 
-install_starship() {
-    if $DRY_RUN; then
-        info "[DRY-RUN] 跳过 Starship 安装"
-        return
-    fi
-    if ! command -v starship &>/dev/null; then
-        info "安装 Starship..."
-        mkdir -p "$HOME/.local/bin"
-        curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir "$HOME/.local/bin" --yes
-        success "Starship 安装完成"
-    else
-        success "Starship 已安装"
-    fi
-}
 
 install_tpm() {
     if $DRY_RUN; then
@@ -293,7 +279,6 @@ EOF
 
 module_shell_preinstall() {
     install_antidote
-    install_starship
     # 模板拷贝 .env.local（仅当 .local 不存在且 .example 存在）
     if [[ ! -f "$DOTFILES_DIR/misc/.env.local" && -f "$DOTFILES_DIR/misc/.env.local.example" ]]; then
         if $DRY_RUN; then
