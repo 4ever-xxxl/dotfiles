@@ -102,3 +102,12 @@ fi
 
 # Added by Antigravity CLI installer
 export PATH="/home/lx10ng/.local/bin:$PATH"
+
+# =============================================================================
+# Login Directory Redirect
+# =============================================================================
+# 在登陆后跳转回home目录 (避免在 tmux 或 VS Code 终端中重置目录)
+if [[ -o login && -z "$TMUX" && "$TERM_PROGRAM" != "vscode" ]]; then
+    cd "$HOME"
+fi
+

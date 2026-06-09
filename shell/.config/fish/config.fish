@@ -38,3 +38,9 @@ end
 
 # Added by Antigravity CLI installer
 set -gx PATH "/home/lx10ng/.local/bin" $PATH
+
+# 在登陆后跳转回home目录 (避免在 tmux 或 VS Code 终端中重置目录)
+if status is-login; and not set -q TMUX; and not test "$TERM_PROGRAM" = "vscode"
+    cd ~
+end
+
