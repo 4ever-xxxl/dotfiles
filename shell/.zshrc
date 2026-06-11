@@ -101,7 +101,7 @@ fi
 
 
 # Added by Antigravity CLI installer
-export PATH="/home/lx10ng/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 # =============================================================================
 # Login Directory Redirect

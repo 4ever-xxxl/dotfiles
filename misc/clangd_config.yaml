@@ -1,3 +1,31 @@
+# 全局配置
+Index:
+  Background: Build
+
+Diagnostics:
+  ClangTidy:
+    Add:
+      - "bugprone-*"
+      - "performance-*"
+      - "readability-*"
+      - "modernize-*"
+    Remove:
+      - "modernize-use-trailing-return-type"
+      - "readability-magic-numbers"
+      - "readability-braces-around-statements"
+  Suppress:
+    - "drv_unknown_argument"
+
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+  Designators: Yes
+  BlockEnd: No
+  DefaultArguments: Yes
+
+---
+# CUDA 对应文件的特定配置
 If:
   PathMatch: [.*\.cu, .*\.cuh]
 CompileFlags:
@@ -5,9 +33,11 @@ CompileFlags:
     - "-xcuda"
     - "--cuda-path=/usr/local/cuda"
     - "-I/usr/local/cuda/include"
-    - "--cuda-gpu-arch=sm_100" 
+    - "--cuda-gpu-arch=sm_90"
     - "-nocudalib"
-  Remove: 
+    - "--cuda-host-only"
+  Remove:
+    - "-arch=*"
     - "-forward-unknown-to-host-compiler"
     - "--generate-code=*"
     - "-Xcompiler=*"
@@ -17,3 +47,7 @@ CompileFlags:
     - "-gencode=*"
     - "--expt-relaxed-constexpr"
     - "--expt-extended-lambda"
+    - "--threads=*"
+    - "--split-compile=*"
+    - "--compress-mode=*"
+    - "--Ofast-compile=*"

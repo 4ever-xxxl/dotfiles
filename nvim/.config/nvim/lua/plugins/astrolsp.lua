@@ -48,6 +48,7 @@ return {
     config = {
       clangd = {
         capabilities = { offsetEncoding = "utf-8" },
+        filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
       },
       -- Use basedpyright as primary Python LSP
       basedpyright = {
@@ -108,13 +109,15 @@ return {
 
       -- the key is the server that is being setup with `lspconfig`
       clangd = function(_, opts)
+        local mason_clangd = vim.fn.stdpath "data" .. "/mason/bin/clangd"
+        local clangd = vim.fn.executable(mason_clangd) == 1 and mason_clangd or "clangd"
         opts.cmd = {
-          "clangd",
+          clangd,
           "--background-index",
           "--clang-tidy",
           "--header-insertion=iwyu",
           "--completion-style=detailed",
-          "--query-driver=/usr/bin/g++,/usr/bin/clang++,/usr/bin/nvcc,/usr/local/cuda/bin/nvcc",
+          "--query-driver=/usr/bin/g++,/usr/bin/clang++,/usr/bin/nvcc,/usr/local/cuda/bin/nvcc,/usr/local/cuda-*/bin/nvcc",
         }
         require("lspconfig").clangd.setup(opts)
       end,

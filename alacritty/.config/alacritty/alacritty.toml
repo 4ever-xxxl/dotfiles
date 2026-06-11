@@ -1,5 +1,5 @@
 [general]
-working_directory = "/home/lx10ng/"
+# working_directory = "/home/lx10ng/"
 import = [
   # "./catppuccin-latte.toml",
   # "./catppuccin-frappe.toml"
