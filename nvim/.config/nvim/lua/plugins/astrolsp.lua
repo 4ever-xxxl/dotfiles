@@ -18,7 +18,7 @@ return {
     formatting = {
       -- control auto formatting on save
       format_on_save = {
-        enabled = true, -- enable or disable format on save globally
+        enabled = false, -- 格式化统一由 conform.nvim 处理，避免与 LSP 双重触发
         allow_filetypes = { -- enable format on save for specified filetypes only
           -- "go",
         },
@@ -123,7 +123,7 @@ return {
       end,
       -- Disable pyright to use basedpyright instead
       pyright = false,
-      -- Disable ruff LSP, use none-ls for formatting only
+      -- Disable ruff LSP, formatting handled by conform.nvim (ruff_format)
       ruff = false,
       -- Enable Metals for Scala/Chisel
       metals = function() end,

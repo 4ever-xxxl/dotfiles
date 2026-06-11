@@ -18,49 +18,6 @@ local themes = {
 	"catppuccin-mocha",
 }
 
-local transparent_groups = {
-	"Normal",
-	"NormalNC",
-	"NormalFloat",
-	"FloatBorder",
-	"FloatTitle",
-	"Pmenu",
-	"SignColumn",
-	"StatusLine",
-	"StatusLineNC",
-	"TabLine",
-	"TabLineFill",
-	"WinBar",
-	"WinBarNC",
-	"WinSeparator",
-	"EndOfBuffer",
-	"NeoTreeNormal",
-	"NeoTreeNormalNC",
-	"NeoTreeFloatNormal",
-	"NeoTreeFloatBorder",
-	"NeoTreeSignColumn",
-	"NeoTreeStatusLine",
-	"NeoTreeStatusLineNC",
-	"NeoTreeVertSplit",
-	"NeoTreeWinSeparator",
-	"NeoTreeEndOfBuffer",
-	"NeoTreeTabActive",
-	"NeoTreeTabInactive",
-	"NeoTreeTabSeparatorActive",
-	"NeoTreeTabSeparatorInactive",
-}
-
-local function apply_transparent_background()
-	for _, group in ipairs(transparent_groups) do
-		vim.api.nvim_set_hl(0, group, { bg = "NONE" })
-	end
-end
-
-vim.api.nvim_create_autocmd("ColorScheme", {
-	callback = apply_transparent_background,
-})
-
-apply_transparent_background()
 
 local function current_theme_index()
 	local active = vim.g.colors_name
@@ -79,7 +36,7 @@ local function apply_theme(name)
 		vim.notify("切换主题失败: " .. tostring(err), vim.log.levels.ERROR)
 		return false
 	end
-	apply_transparent_background()
+	-- 透明背景由 astroui.lua highlights.init 统一管理
 	vim.notify("已切换主题: " .. name, vim.log.levels.INFO)
 	return true
 end
