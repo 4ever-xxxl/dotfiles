@@ -32,7 +32,6 @@ require("lazy").setup({
         "zipPlugin",
         "matchit",
         "man",
-        "health",
         "tutor",
       },
     },
