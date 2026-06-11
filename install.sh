@@ -92,7 +92,7 @@ install_package() {
             fi
             ;;
         debian)
-            if ! dpkg -l "$package" &>/dev/null; then
+            if ! dpkg -s "$package" &>/dev/null; then
                 info "安装 $package..."
                 sudo apt-get install -y "$package"
             fi
