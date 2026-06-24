@@ -1,28 +1,68 @@
-# 全局配置
-Index:
-  Background: Build
+CompileFlags:
+  Add:
+    - -Wall
+    - -Wextra
+    - -Wpedantic
+    - -ferror-limit=0
+    - -I/usr/lib/x86_64-linux-gnu/openmpi/include
+  Remove:
+    - -Werror
+  CompilationDatabase: Auto
 
 Diagnostics:
+  UnusedIncludes: Strict
+  MissingIncludes: Strict
   ClangTidy:
     Add:
-      - "bugprone-*"
-      - "performance-*"
-      - "readability-*"
-      - "modernize-*"
+      - bugprone-*
+      - performance-*
+      - portability-*
+      - modernize-*
+      - readability-*
+      - cppcoreguidelines-*
+      - misc-*
     Remove:
-      - "modernize-use-trailing-return-type"
-      - "readability-magic-numbers"
-      - "readability-braces-around-statements"
+      - modernize-use-trailing-return-type
+      - readability-magic-numbers
+      - readability-identifier-length
+      - cppcoreguidelines-pro-bounds-array-to-pointer-decay
+      - misc-non-private-member-variables-in-classes
+    CheckOptions:
+      readability-identifier-naming.VariableCase: camelBack
+      readability-identifier-naming.FunctionCase: camelBack
+      readability-identifier-naming.ClassCase: CamelCase
+      readability-identifier-naming.StructCase: CamelCase
+      readability-identifier-naming.EnumCase: CamelCase
+      readability-identifier-naming.GlobalConstantCase: CamelCase
+      readability-braces-around-statements.ShortStatementLines: "1"
   Suppress:
-    - "drv_unknown_argument"
+    - drv_unknown_argument
+
+Completion:
+  AllScopes: true
+  ArgumentLists: FullPlaceholders
+  HeaderInsertion: IWYU
+  CodePatterns: All
 
 InlayHints:
-  Enabled: Yes
-  ParameterNames: Yes
-  DeducedTypes: Yes
-  Designators: Yes
-  BlockEnd: No
-  DefaultArguments: Yes
+  Enabled: true
+  ParameterNames: true
+  DeducedTypes: true
+  Designators: true
+  BlockEnd: true
+  DefaultArguments: true
+  TypeNameLimit: 32
+
+Hover:
+  ShowAKA: true
+
+Index:
+  Background: Build
+  StandardLibrary: true
+
+SemanticTokens:
+  DisabledKinds: []
+  DisabledModifiers: []
 
 ---
 # CUDA 对应文件的特定配置

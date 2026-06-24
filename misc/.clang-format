@@ -1,1 +1,16 @@
 BasedOnStyle: Google
+ColumnLimit: 100
+IndentWidth: 4
+AccessModifierOffset: -2
+AlignTrailingComments: true
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: false
+  AfterFunction: false
+IncludeBlocks: Regroup
+SortIncludes: true
+SpacesBeforeTrailingComments: 1
+PointerAlignment: Left
+FixNamespaceComments: true

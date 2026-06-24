@@ -11,7 +11,7 @@ return {
     -- Configuration table of features provided by AstroLSP
     features = {
       codelens = true, -- enable/disable codelens refresh on start
-      inlay_hints = false, -- enable/disable inlay hints on start
+      inlay_hints = true, -- enable/disable inlay hints on start (also requires clangd InlayHints.Enabled)
       semantic_tokens = true, -- enable/disable semantic token highlighting
     },
     -- customize lsp formatting options
@@ -117,7 +117,7 @@ return {
           "--clang-tidy",
           "--header-insertion=iwyu",
           "--completion-style=detailed",
-          "--query-driver=/usr/bin/g++,/usr/bin/clang++,/usr/bin/nvcc,/usr/local/cuda/bin/nvcc,/usr/local/cuda-*/bin/nvcc",
+          "--query-driver=/usr/bin/gcc,/usr/bin/g++,/usr/bin/clang,/usr/bin/clang++,/usr/bin/nvcc,/usr/local/cuda/bin/nvcc,/usr/local/cuda-*/bin/nvcc",
         }
         require("lspconfig").clangd.setup(opts)
       end,

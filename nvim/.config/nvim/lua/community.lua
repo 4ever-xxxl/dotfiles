@@ -5,7 +5,12 @@
 ---@type LazySpec
 return {
   "AstroNvim/astrocommunity",
-  { import = "astrocommunity.fuzzy-finder.telescope-nvim" },
+  { import = "astrocommunity.fuzzy-finder.fzf-lua" },
+  { import = "astrocommunity.completion.blink-cmp" },
+  { import = "astrocommunity.file-explorer.oil-nvim" },
+  { import = "astrocommunity.motion.flash-nvim" },
+  { import = "astrocommunity.git.diffview-nvim" },
+  { import = "astrocommunity.diagnostics.trouble-nvim" },
 
   { import = "astrocommunity.pack.cmake" },
   { import = "astrocommunity.pack.cpp" },

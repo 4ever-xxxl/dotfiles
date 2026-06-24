@@ -154,4 +154,30 @@ return {
       require("nvim-surround").setup()
     end,
   },
+
+  -- Disable headlines.nvim which is archived and may cause errors on new Neovim versions
+  {
+    "lukas-reineke/headlines.nvim",
+    enabled = false,
+  },
+
+  -- Add modern markdown rendering plugin
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    event = "VeryLazy",
+    opts = {
+      code = {
+        sign = false,
+        width = "block",
+        right_pad = 4,
+      },
+    },
+  },
+
+  -- MPI syntax highlighting
+  {
+    "jiangxincode/mpi.vim",
+    ft = { "c", "cpp", "fortran" },
+  },
 }

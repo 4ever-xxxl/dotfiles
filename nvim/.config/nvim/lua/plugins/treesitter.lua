@@ -17,6 +17,7 @@ return {
       "yaml",
       "toml",
       "markdown",
+      "markdown_inline",
       "scala", -- Chisel/Scala support
       -- add more arguments for adding more treesitter parsers
     },
