@@ -1,38 +1,101 @@
--- Customize Treesitter
+-- Configure the current nvim-treesitter main branch through AstroCore.
+-- AstroNvim v6 moved Treesitter feature configuration out of the old
+-- `require("nvim-treesitter.configs").setup()` module.
+
+local function treesitter_enabled(_, buf)
+  -- Disable Treesitter features for very large files.
+  local max_filesize = 500 * 1024
+  local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
+  return not (ok and stats and stats.size > max_filesize)
+end
 
 ---@type LazySpec
 return {
-  "nvim-treesitter/nvim-treesitter",
-  opts = {
-    ensure_installed = {
-      "lua",
-      "vim",
-      "python",
-      "c",
-      "cpp",
-      "cuda",
-      "rust",
-      "bash",
-      "json",
-      "yaml",
-      "toml",
-      "markdown",
-      "markdown_inline",
-      "scala", -- Chisel/Scala support
-      -- add more arguments for adding more treesitter parsers
+  {
+    "AstroNvim/astrocore",
+    ---@type AstroCoreOpts
+    opts = {
+      treesitter = {
+        enabled = treesitter_enabled,
+        highlight = true,
+        indent = true,
+        auto_install = true,
+        ensure_installed = {
+          "lua",
+          "vim",
+          "python",
+          "c",
+          "cpp",
+          "cuda",
+          "rust",
+          "bash",
+          "json",
+          "yaml",
+          "toml",
+          "markdown",
+          "markdown_inline",
+          "dtd",
+          "regex",
+          "scala",
+        },
+        textobjects = {
+          select = {
+            select_textobject = {
+              ["ak"] = { query = "@block.outer", desc = "around block" },
+              ["ik"] = { query = "@block.inner", desc = "inside block" },
+              ["ac"] = { query = "@class.outer", desc = "around class" },
+              ["ic"] = { query = "@class.inner", desc = "inside class" },
+              ["a?"] = { query = "@conditional.outer", desc = "around conditional" },
+              ["i?"] = { query = "@conditional.inner", desc = "inside conditional" },
+              ["af"] = { query = "@function.outer", desc = "around function" },
+              ["if"] = { query = "@function.inner", desc = "inside function" },
+              ["ao"] = { query = "@loop.outer", desc = "around loop" },
+              ["io"] = { query = "@loop.inner", desc = "inside loop" },
+              ["aa"] = { query = "@parameter.outer", desc = "around argument" },
+              ["ia"] = { query = "@parameter.inner", desc = "inside argument" },
+            },
+          },
+          move = {
+            goto_next_start = {
+              ["]k"] = { query = "@block.outer", desc = "Next block start" },
+              ["]f"] = { query = "@function.outer", desc = "Next function start" },
+              ["]a"] = { query = "@parameter.inner", desc = "Next argument start" },
+            },
+            goto_next_end = {
+              ["]K"] = { query = "@block.outer", desc = "Next block end" },
+              ["]F"] = { query = "@function.outer", desc = "Next function end" },
+              ["]A"] = { query = "@parameter.inner", desc = "Next argument end" },
+            },
+            goto_previous_start = {
+              ["[k"] = { query = "@block.outer", desc = "Previous block start" },
+              ["[f"] = { query = "@function.outer", desc = "Previous function start" },
+              ["[a"] = { query = "@parameter.inner", desc = "Previous argument start" },
+            },
+            goto_previous_end = {
+              ["[K"] = { query = "@block.outer", desc = "Previous block end" },
+              ["[F"] = { query = "@function.outer", desc = "Previous function end" },
+              ["[A"] = { query = "@parameter.inner", desc = "Previous argument end" },
+            },
+          },
+          swap = {
+            swap_next = {
+              [">K"] = { query = "@block.outer", desc = "Swap next block" },
+              [">F"] = { query = "@function.outer", desc = "Swap next function" },
+              [">A"] = { query = "@parameter.inner", desc = "Swap next argument" },
+            },
+            swap_previous = {
+              ["<K"] = { query = "@block.outer", desc = "Swap previous block" },
+              ["<F"] = { query = "@function.outer", desc = "Swap previous function" },
+              ["<A"] = { query = "@parameter.inner", desc = "Swap previous argument" },
+            },
+          },
+        },
+      },
     },
-    highlight = {
-      enable = true,
-      disable = function(lang, buf)
-        -- Disable highlight for large files to avoid performance issues
-        local max_filesize = 500 * 1024 -- 500 KB
-        local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
-        if ok and stats and stats.size > max_filesize then
-          return true
-        end
-      end,
-    },
-    sync_install = false,
-    auto_install = true,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    branch = "main",
+    lazy = true,
   },
 }

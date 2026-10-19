@@ -19,6 +19,13 @@ if vim.fn.executable "win32yank.exe" == 1 then
   }
 end
 
+-- Use the terminal's OSC52 clipboard bridge when Neovim runs over SSH.
+-- This keeps yanks/pastes working without requiring a DISPLAY on the host.
+if vim.env.SSH_CONNECTION and vim.fn.has "nvim-0.10" == 1 then
+  vim.g.clipboard = "osc52"
+  vim.opt.clipboard = "unnamedplus"
+end
+
 local lazypath = vim.env.LAZY or vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
 if not (vim.env.LAZY or vim.uv.fs_stat(lazypath)) then

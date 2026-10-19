@@ -16,6 +16,17 @@ return {
 
   -- == Custom Plugins ==
 
+  -- Snacks uses a transparent theme; keep its general floating backdrops transparent.
+  {
+    "folke/snacks.nvim",
+    opts = function(_, opts)
+      opts.win = { backdrop = { transparent = true } }
+      -- Image rendering is unavailable in this SSH terminal and is not used
+      -- by the current configuration.
+      opts.image = { enabled = false, doc = { enabled = false } }
+    end,
+  },
+
   -- Better highlight colors
   {
     "EdenEast/nightfox.nvim",
@@ -112,40 +123,6 @@ return {
   },
 
   -- AI code completion (ghost text mode)
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "InsertEnter",
-    config = function()
-      require("copilot").setup {
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-          debounce = 150, -- 增加 debounce 时间，减少请求频率
-          keymap = {
-            accept = "<M-;>",
-            accept_word = "<M-w>",
-            accept_line = "<M-j>",
-            next = "<M-]>",
-            prev = "<M-[>",
-            dismiss = "<C-]>",
-          },
-        },
-        panel = { enabled = false }, -- 禁用 panel 以节省资源
-        filetypes = {
-          markdown = true,
-          help = false,
-          gitcommit = false,
-          gitrebase = false,
-          hgcommit = false,
-          svn = false,
-          cvs = false,
-          ["."] = false,
-        },
-      }
-    end,
-  },
-
   -- Surround text objects
   {
     "kylechui/nvim-surround",

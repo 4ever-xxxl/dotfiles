@@ -13,7 +13,9 @@ return {
     -- AstroUI allows you to easily modify highlight groups easily for any and all colorschemes
     highlights = {
       init = { -- this table overrides highlights in all themes
-        Normal = { bg = "NONE" },
+        -- Keep a foreground color: Snacks' GitHub integration needs it when
+        -- defining its diff line-number highlight groups.
+        Normal = { fg = "#cdcecf", bg = "NONE" },
         NormalNC = { bg = "NONE" },
         NormalFloat = { bg = "NONE" },
         FloatBorder = { bg = "NONE" },
