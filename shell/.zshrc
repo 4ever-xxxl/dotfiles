@@ -107,3 +107,7 @@ if [[ -o login && -z "$TMUX" && "$TERM_PROGRAM" != "vscode" ]]; then
     cd "$HOME"
 fi
 
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/xionglei/.local/bin:$PATH"

@@ -35,7 +35,7 @@ uv_venv_auto = true                  # 自动探测并激活项目根目录下�
 [tools]
 node = "lts"
 java = "graalvm-community-24.0.2"
-neovim = "0.11.7"
+neovim = "latest"
 go = "latest"
 starship = "latest"
 "aqua:dalance/procs" = "latest"
@@ -59,9 +59,10 @@ ruff = "latest"
 bun = "latest"
 claude = "latest"
 opencode = "latest"
-codex = "latest"
 lazydocker = "latest"
 vim = "latest"
+fastfetch = "latest"
+"aqua:librespeed/speedtest-cli" = "latest"
 
 
 
