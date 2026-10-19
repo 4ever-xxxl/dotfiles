@@ -5,7 +5,7 @@
 	path = ~/.gitconfig-work
 
 [core]
-	editor = nvim
+	editor = vim
 
 [init]
 	defaultBranch = main
