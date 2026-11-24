@@ -1,7 +1,7 @@
 # 🏠 Dotfiles
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Neovim](https://img.shields.io/badge/Neovim-0.9+-green.svg?logo=neovim)](https://neovim.io/)
+[![Neovim](https://img.shields.io/badge/Neovim-0.12+-green.svg?logo=neovim)](https://neovim.io/)
 [![OS](https://img.shields.io/badge/OS-Linux%20%7C%20macOS-blue.svg)](https://www.linux.org/)
 [![Shell](https://img.shields.io/badge/Shell-Zsh%20%7C%20Fish-orange.svg)](https://www.zsh.org/)
 
@@ -17,8 +17,6 @@ A professional, modular, and aesthetic configuration for a modern development en
 - [Quick Start](#-quick-start)
 - [Packages](#-packages)
 - [Installation](#-installation)
-- [Screenshots](#-screenshots)
-- [Customization](#-customization)
 
 ## 📦 Overview
 
@@ -33,7 +31,7 @@ This repository uses a **package-based structure** to manage configurations for 
 
 ### 1. Clone the repository
 ```bash
-git clone <your-repo-url> ~/dotfiles
+git clone https://github.com/4ever-xxxl/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
@@ -64,7 +62,7 @@ Available modules: `shell tmux alacritty nvim vim git dev`. Run `./install.sh he
 | **`nvim/`** | Neovim (AstroNvim) | IDE-like experience, LSP, Treesitter, DAP |
 | **`tmux/`** | Terminal Multiplexer | Vim-style keys, status bar, plugin manager (TPM) |
 | **`alacritty/`** | Terminal Emulator | GPU accelerated, Catppuccin & Dawnfox themes |
-| **`git/`** | Version Control | Global ignore, custom aliases |
+| **`git/`** | Version Control | Conditional identities, custom aliases |
 | **`misc/`** | Other configs | Vimrc, GDB Dashboard, Clang-format, Condarc |
 
 ## 🔗 Manual Installation
@@ -89,9 +87,9 @@ ln -sf ~/dotfiles/nvim/.config/nvim ~/.config/nvim
 
 ## 🔧 Dependencies
 
-- `zsh`, `tmux`, `git`, `curl` (Core)
+- `git` for plugin bootstrap; install `zsh`, `tmux`, and other tools for the modules you use
 - [mise](https://mise.jdx.dev/) (Recommended, manages all runtimes and CLI tools)
-- `neovim` 0.9+ (Recommended, can be installed via `mise`)
+- `neovim` 0.12+ (Recommended, can be installed via `mise`)
 - [Nerd Fonts](https://www.nerdfonts.com/) (Required for icons/Starship)
 
 ## 📄 License
@@ -100,3 +98,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 ⭐ If you find this helpful, please give it a star!
+
+Machine-specific settings live in `~/.env.local`, created with mode 600 only if absent; do not commit credentials. Preview with `--dry-run`. Existing files and links are backed up under `~/.dotfiles_backup/`; restore them manually after uninstalling. Install system dependencies separately. See the [Neovim requirements](nvim/.config/nvim/README.md).

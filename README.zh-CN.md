@@ -1,7 +1,7 @@
 # 🏠 Dotfiles
 
 [![License: MIT](https://img.shields.io/badge/许可证-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Neovim](https://img.shields.io/badge/编辑器-Neovim%200.9+-green.svg?logo=neovim)](https://neovim.io/)
+[![Neovim](https://img.shields.io/badge/编辑器-Neovim%200.12+-green.svg?logo=neovim)](https://neovim.io/)
 [![OS](https://img.shields.io/badge/系统-Linux%20%7C%20macOS-blue.svg)](https://www.linux.org/)
 [![Shell](https://img.shields.io/badge/Shell-Zsh%20%7C%20Fish-orange.svg)](https://www.zsh.org/)
 
@@ -18,7 +18,6 @@
 - [配置包介绍](#-配置包介绍)
 - [安装方法](#-安装方法)
 - [功能特性](#-功能特性)
-- [自定义](#-自定义)
 
 ## 📦 概览
 
@@ -33,7 +32,7 @@
 
 ### 1. 克隆仓库
 ```bash
-git clone <your-repo-url> ~/dotfiles
+git clone https://github.com/4ever-xxxl/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
@@ -64,7 +63,7 @@ chmod +x install.sh
 | **`nvim/`** | Neovim (AstroNvim) | 类 IDE 体验、LSP、Treesitter、调试支持 |
 | **`tmux/`** | 终端复用器 | Vim 风格键位、自定义状态栏、插件管理 (TPM) |
 | **`alacritty/`** | 终端模拟器 | GPU 加速、包含 Catppuccin 和 Dawnfox 主题 |
-| **`git/`** | 版本控制 | 全局忽略、常用快捷别名 |
+| **`git/`** | 版本控制 | 条件身份配置、常用快捷别名 |
 | **`misc/`** | 其他工具 | Vimrc、GDB 可视化仪表盘、Clang-format、Conda 镜像配置 |
 
 ## 🔗 手动安装
@@ -89,9 +88,9 @@ ln -sf ~/dotfiles/nvim/.config/nvim ~/.config/nvim
 
 ## 🔧 依赖项
 
-- `zsh`, `tmux`, `git`, `curl` (核心依赖)
+- `git` 用于安装插件管理器；按所选模块自行安装 `zsh`、`tmux` 等工具
 - [mise](https://mise.jdx.dev/) (推荐，用于管理所有运行时与 CLI 工具)
-- `neovim` 0.9+ (推荐版本，可通过 `mise` 管理)
+- `neovim` 0.12+ (推荐版本，可通过 `mise` 管理)
 - [Nerd Fonts](https://www.nerdfonts.com/) (显示图标和 Starship 提示符必需)
 
 ## 📄 许可证
@@ -100,3 +99,5 @@ ln -sf ~/dotfiles/nvim/.config/nvim ~/.config/nvim
 
 ---
 ⭐ 如果这些配置对你有帮助，请点一个 star！
+
+本机设置保存在 `~/.env.local`，首次安装时仅在文件不存在时创建（权限 600）；不要将凭据提交到仓库。安装前请使用 `--dry-run` 预览。已有配置和链接备份在 `~/.dotfiles_backup/`；卸载后可从相应备份目录手动恢复。系统依赖需自行安装。Neovim 的详细依赖见 [配置说明](nvim/.config/nvim/README.md)。
