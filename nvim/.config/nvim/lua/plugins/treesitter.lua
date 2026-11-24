@@ -11,6 +11,13 @@ end
 
 ---@type LazySpec
 return {
+  -- AstroNvim configures Treesitter features through AstroCore. Keep the
+  -- parser installer on the current Neovim 0.12-compatible branch.
+  {
+    "nvim-treesitter/nvim-treesitter",
+    branch = "main",
+    build = ":TSUpdate",
+  },
   {
     "AstroNvim/astrocore",
     ---@type AstroCoreOpts
@@ -92,6 +99,16 @@ return {
         },
       },
     },
+  },
+  {
+    "AstroNvim/astrocore",
+    opts = function(_, opts)
+      local parsers = opts.treesitter.ensure_installed
+      opts.treesitter.ensure_installed = vim.tbl_filter(function(parser) return parser ~= "verilog" end, parsers)
+      if not vim.tbl_contains(opts.treesitter.ensure_installed, "systemverilog") then
+        table.insert(opts.treesitter.ensure_installed, "systemverilog")
+      end
+    end,
   },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",

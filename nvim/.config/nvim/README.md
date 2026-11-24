@@ -1,34 +1,26 @@
-# AstroNvim Template
+# AstroNvim user configuration
 
-**NOTE:** This is for AstroNvim v5+
+AstroNvim v6 configuration for Neovim 0.12. The plugin and community-pack selections are based on the previous setup in `nvim-bak`.
 
-A template for getting started with [AstroNvim](https://github.com/AstroNvim/AstroNvim)
+## Requirements
 
-## 🛠️ Installation
+- Neovim 0.12 or newer
+- Git, `curl`, and `tar`
+- `tree-sitter-cli` 0.26.1 or newer, installed from a system package manager
+- A C compiler and the standard C++ library
 
-#### Make a backup of your current nvim and shared folder
+The current `nvim-treesitter` release uses its `main` branch with Neovim 0.12 and requires the parser CLI and compiler when installing parsers. AstroNvim manages parsers through its AstroCore Treesitter settings and runs `:TSUpdate` when updating the plugin.
 
-```shell
-mv ~/.config/nvim ~/.config/nvim.bak
-mv ~/.local/share/nvim ~/.local/share/nvim.bak
-mv ~/.local/state/nvim ~/.local/state/nvim.bak
-mv ~/.cache/nvim ~/.cache/nvim.bak
+## Install
+
+This configuration lives in the dotfiles repository. Link it to Neovim's standard config path:
+
+```sh
+ln -s ~/dotfiles/nvim/.config/nvim ~/.config/nvim
 ```
 
-#### Create a new user repository from this template
+Start Neovim and let `lazy.nvim` install AstroNvim and the configured plugins. Use `:Lazy sync` to synchronize plugins later. Mason-managed language servers, debuggers, and formatters are listed in `lua/plugins/mason.lua`.
 
-Press the "Use this template" button above to create a new repository to store your user configuration.
+## Included language support
 
-You can also just clone this repository directly if you do not want to track your user configuration in GitHub.
-
-#### Clone the repository
-
-```shell
-git clone https://github.com/<your_user>/<your_repository> ~/.config/nvim
-```
-
-#### Start Neovim
-
-```shell
-nvim
-```
+AstroCommunity packs are enabled for CMake, C/C++, Go, Java, Lua, Markdown, Python, Rust, Scala, and Verilog. Other configured plugins are listed in `lua/plugins/user.lua`.

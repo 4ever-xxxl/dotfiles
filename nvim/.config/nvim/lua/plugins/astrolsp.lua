@@ -3,6 +3,9 @@
 -- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
 --       as this provides autocomplete and documentation while editing
 
+local mason_clangd = vim.fn.stdpath "data" .. "/mason/bin/clangd"
+local clangd = vim.fn.executable(mason_clangd) == 1 and mason_clangd or "clangd"
+
 ---@type LazySpec
 return {
   "AstroNvim/astrolsp",
@@ -47,6 +50,14 @@ return {
     ---@diagnostic disable: missing-fields
     config = {
       clangd = {
+        cmd = {
+          clangd,
+          "--background-index",
+          "--clang-tidy",
+          "--header-insertion=iwyu",
+          "--completion-style=detailed",
+          "--query-driver=/usr/bin/gcc,/usr/bin/g++,/usr/bin/clang,/usr/bin/clang++,/usr/bin/nvcc,/usr/local/cuda/bin/nvcc,/usr/local/cuda-*/bin/nvcc",
+        },
         capabilities = { offsetEncoding = "utf-8" },
         filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
       },
@@ -104,25 +115,11 @@ return {
     },
     -- customize how language servers are attached
     handlers = {
-      -- a function without a key is simply the default handler, functions take two parameters, the server name and the configured options table for that server
-      -- function(server, opts) require("lspconfig")[server].setup(opts) end
-
-      -- the key is the server that is being setup with `lspconfig`
-      clangd = function(_, opts)
-        local mason_clangd = vim.fn.stdpath "data" .. "/mason/bin/clangd"
-        local clangd = vim.fn.executable(mason_clangd) == 1 and mason_clangd or "clangd"
-        opts.cmd = {
-          clangd,
-          "--background-index",
-          "--clang-tidy",
-          "--header-insertion=iwyu",
-          "--completion-style=detailed",
-          "--query-driver=/usr/bin/gcc,/usr/bin/g++,/usr/bin/clang,/usr/bin/clang++,/usr/bin/nvcc,/usr/local/cuda/bin/nvcc,/usr/local/cuda-*/bin/nvcc",
-        }
-        require("lspconfig").clangd.setup(opts)
-      end,
-      -- Disable pyright to use basedpyright instead
+      -- AstroLSP v6 handlers receive the server name; configure server options in `config` above.
+      -- Keep basedpyright as the only Python type checker even if other servers are installed in Mason.
       pyright = false,
+      pyrefly = false,
+      ty = false,
       -- Disable ruff LSP, formatting handled by conform.nvim (ruff_format)
       ruff = false,
       -- Enable Metals for Scala/Chisel
@@ -145,7 +142,7 @@ return {
           -- the rest of the autocmd options (:h nvim_create_autocmd)
           desc = "Refresh codelens (buffer)",
           callback = function(args)
-            if require("astrolsp").config.features.codelens then vim.lsp.codelens.refresh { bufnr = args.buf } end
+            if require("astrolsp").config.features.codelens then vim.lsp.codelens.enable(true, { bufnr = args.buf }) end
           end,
         },
       },
@@ -163,7 +160,7 @@ return {
           function() require("astrolsp.toggles").buffer_semantic_tokens() end,
           desc = "Toggle LSP semantic highlight (buffer)",
           cond = function(client)
-            return client.supports_method "textDocument/semanticTokens/full" and vim.lsp.semantic_tokens ~= nil
+            return client:supports_method "textDocument/semanticTokens/full" and vim.lsp.semantic_tokens ~= nil
           end,
         },
       },

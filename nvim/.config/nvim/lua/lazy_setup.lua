@@ -14,31 +14,17 @@ require("lazy").setup({
   { import = "community" },
   { import = "plugins" },
 } --[[@as LazySpec]], {
-  -- Configure any other `lazy.nvim` configuration options here
   install = { colorscheme = { "astrotheme", "habamax" } },
   ui = { backdrop = 100 },
-  -- No configured plugin needs LuaRocks; avoid probing the optional hererocks runtime.
-  rocks = { enabled = false },
   performance = {
-    cache = {
-      enabled = true,
-      disable_events = { "UIEnter" },
-    },
     rtp = {
-      -- disable some rtp plugins, add more to your liking
       disabled_plugins = {
         "gzip",
         "netrwPlugin",
         "tarPlugin",
         "tohtml",
         "zipPlugin",
-        "matchit",
-        "man",
-        "tutor",
       },
     },
-  },
-  defaults = {
-    lazy = true,
   },
 } --[[@as LazyConfig]])
