@@ -253,15 +253,17 @@ check_modern_tools() {
 
 MODULE_NAMES=(shell tmux alacritty nvim vim git dev)
 
-declare -A MODULE_DESC=(
-    [shell]="zsh + fish + starship + antidote + .env"
-    [tmux]="tmux.conf + TPM + 跨平台剪贴板脚本"
-    [alacritty]="Alacritty + Catppuccin/Dawnfox 主题"
-    [nvim]="Neovim (AstroNvim 基础)"
-    [vim]="轻量 .vimrc"
-    [git]=".gitconfig + personal + work"
-    [dev]="gdb + clang-format + clangd + condarc"
-)
+module_desc() {
+    case "$1" in
+        shell) echo "zsh + fish + mise + .env" ;;
+        tmux) echo "tmux + TPM" ;;
+        alacritty) echo "Alacritty themes" ;;
+        nvim) echo "Neovim (AstroNvim)" ;;
+        vim) echo "Vim" ;;
+        git) echo "Git identities" ;;
+        dev) echo "Development tools" ;;
+    esac
+}
 
 # --- shell ---------------------------------------------------------------------
 module_shell_links() {
@@ -272,22 +274,18 @@ $DOTFILES_DIR/shell/.config/fish=>$HOME/.config/fish
 $DOTFILES_DIR/shell/.config/mise/config.toml=>$HOME/.config/mise/config.toml
 $DOTFILES_DIR/misc/.env=>$HOME/.env
 EOF
-    # .env.local 仅当源文件已存在时才登记，避免 dangling 链接
-    [[ -f "$DOTFILES_DIR/misc/.env.local" ]] \
-        && echo "$DOTFILES_DIR/misc/.env.local=>$HOME/.env.local"
+
 }
 
 module_shell_preinstall() {
     install_antidote
-    # 模板拷贝 .env.local（仅当 .local 不存在且 .example 存在）
-    if [[ ! -f "$DOTFILES_DIR/misc/.env.local" && -f "$DOTFILES_DIR/misc/.env.local.example" ]]; then
+    # 本机配置留在 HOME，绝不覆盖已有文件或符号链接。
+    if [[ ! -e "$HOME/.env.local" && ! -L "$HOME/.env.local" ]]; then
         if $DRY_RUN; then
-            info "[DRY-RUN] 将从模板创建 misc/.env.local"
+            info "[DRY-RUN] 将创建 ~/.env.local"
         else
-            cp "$DOTFILES_DIR/misc/.env.local.example" "$DOTFILES_DIR/misc/.env.local"
-            # 环境变量文件不应可执行；显式归一为 644 防止权限漂移
-            chmod 644 "$DOTFILES_DIR/misc/.env.local"
-            warning "已从模板创建 misc/.env.local，请按需编辑代理、conda 路径等本机配置"
+            (umask 077; cp "$DOTFILES_DIR/misc/.env.local.example" "$HOME/.env.local")
+            chmod 600 "$HOME/.env.local"
         fi
     fi
 }
@@ -353,7 +351,7 @@ is_valid_module() {
 install_module() {
     local name=$1
     echo ""
-    echo -e "${CYAN}━━━ 模块: $name (${MODULE_DESC[$name]:-}) ━━━${NC}"
+    echo -e "${CYAN}━━━ 模块: $name ($(module_desc "$name")) ━━━${NC}"
 
     if declare -F "module_${name}_preinstall" >/dev/null; then
         "module_${name}_preinstall"
@@ -377,11 +375,12 @@ uninstall_module() {
     echo ""
     echo -e "${CYAN}━━━ 卸载模块: $name ━━━${NC}"
 
-    local dst line
+    local src dst line
     while IFS= read -r line; do
         [[ -z "$line" ]] && continue
+        src="${line%%=>*}"
         dst="${line#*=>}"
-        if [[ -L "$dst" ]]; then
+        if [[ -L "$dst" && "$(readlink "$dst")" == "$src" ]]; then
             if $DRY_RUN; then
                 info "[DRY-RUN] 将移除: $dst"
             else
@@ -426,7 +425,7 @@ list_modules() {
     echo ""
     local m
     for m in "${MODULE_NAMES[@]}"; do
-        printf "  ${GREEN}%-11s${NC} %s\n" "$m" "${MODULE_DESC[$m]:-}"
+        printf "  ${GREEN}%-11s${NC} %s\n" "$m" "$(module_desc "$m")"
     done
     echo ""
     echo "用法："
@@ -459,7 +458,7 @@ backup_existing() {
 
     local need_backup=false target
     for target in "${targets[@]}"; do
-        if [[ -e "$target" && ! -L "$target" ]]; then
+        if [[ -e "$target" || -L "$target" ]]; then
             need_backup=true
             break
         fi
@@ -470,17 +469,18 @@ backup_existing() {
     fi
 
     local backup_dir
-    backup_dir="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
+    mkdir -p "$HOME/.dotfiles_backup"
+    backup_dir=$(mktemp -d "$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S).XXXXXX")
     info "备份现有配置到 $backup_dir"
     mkdir -p "$backup_dir"
 
     local rel dir
     for target in "${targets[@]}"; do
-        if [[ -e "$target" && ! -L "$target" ]]; then
+        if [[ -e "$target" || -L "$target" ]]; then
             rel="${target#"$HOME"/}"
             dir=$(dirname "$backup_dir/$rel")
             mkdir -p "$dir"
-            cp -r "$target" "$backup_dir/$rel"
+            cp -pR "$target" "$backup_dir/$rel"
             success "备份: $rel"
         fi
     done
@@ -509,18 +509,7 @@ install_dotfiles() {
     backup_existing "${modules[@]}"
     echo ""
 
-    echo -e "${CYAN}━━━ 检查基础依赖 ━━━${NC}"
-    command -v git &>/dev/null || install_package git
-    command -v zsh &>/dev/null || install_package zsh
-    command -v tmux &>/dev/null || install_package tmux
-    command -v vim &>/dev/null || install_package vim
-    command -v curl &>/dev/null || install_package curl
-    success "基础依赖检查完成"
-    echo ""
-
-    echo -e "${CYAN}━━━ 检查现代工具 ━━━${NC}"
-    check_modern_tools
-    echo ""
+    info "系统软件请按所选模块手动安装；脚本不会调用系统包管理器。"
 
     local m
     for m in "${modules[@]}"; do
@@ -536,7 +525,7 @@ install_dotfiles() {
     echo "  1. 重新启动终端或运行: source ~/.zshrc"
     echo "  2. 如需自定义 Starship 提示符，编辑 ~/.config/starship.toml"
     echo "  3. 进入 tmux 后按 Ctrl+a I 安装 tmux 插件"
-    echo "  4. 按需编辑 ~/dotfiles/misc/.env.local"
+    echo "  4. 按需编辑 ~/.env.local"
     echo ""
     echo -e "${BLUE}备份位置: ~/.dotfiles_backup/${NC}"
     echo ""
