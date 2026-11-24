@@ -39,8 +39,3 @@ end
 if status is-login; and not set -q TMUX; and not test "$TERM_PROGRAM" = "vscode"
     cd ~
 end
-
-
-
-# Added by Antigravity CLI installer
-set -gx PATH "/home/xionglei/.local/bin" $PATH
